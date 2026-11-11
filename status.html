@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="color-scheme" content="light">
+<title>Cek Status Pelamar · Beasiswa Arutmin 2026</title>
+<style>
+
+:root{
+  --bg:#f3f1ea; --card:#ffffff; --ink:#18221d; --muted:#586259; --line:#d6d2c4; --soft:#ece9df;
+  --brand:#14532d; --brand-d:#0e3d21; --brand-soft:#e3efe7;
+  --accent:#9a4a07; --accent-soft:#fdeed6;
+  --danger:#b42318; --danger-soft:#fde8e6; --ok:#157a3d;
+  --r:14px; --shadow:0 1px 2px rgba(20,30,25,.06),0 8px 24px rgba(20,30,25,.06);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:17px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;min-height:100vh;
+  padding-bottom:env(safe-area-inset-bottom)}
+[hidden]{display:none!important}
+h1,h2,h3{line-height:1.25;margin:0 0 .5em}
+h1{font-size:1.6rem} h2{font-size:1.3rem} h3{font-size:1.05rem}
+p{margin:0 0 .8em}
+small,.muted{color:var(--muted)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;background:var(--brand);color:#fff;border-bottom:3px solid #0b2f19}
+.top-in{max-width:820px;margin:0 auto;padding:10px 16px;padding-left:max(16px,env(safe-area-inset-left));padding-right:max(16px,env(safe-area-inset-right));
+  display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:60px}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.mark{flex:none;width:34px;height:34px;border-radius:9px;background:#fff;display:grid;place-items:center}
+.mark::before{content:"";width:16px;height:16px;background:var(--brand);transform:rotate(45deg);border-radius:3px}
+.brand b{display:block;font-size:1.02rem;line-height:1.2}
+.brand small{display:block;color:#cfe3d6;font-size:.82rem;line-height:1.25}
+.meta{display:flex;align-items:center;gap:16px;flex:1;justify-content:flex-end;min-width:0}
+.prog{flex:1;max-width:280px;min-width:90px}
+.prog span{display:block;font-size:.85rem;color:#d7e8dd;margin-bottom:4px;white-space:nowrap}
+.bar{height:6px;border-radius:99px;background:rgba(255,255,255,.22);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:#9fe0b4;transition:width .25s}
+.timer{flex:none;text-align:right;padding:4px 12px;border-radius:10px;background:rgba(0,0,0,.18);min-width:112px}
+.timer .lbl{display:block;font-size:.72rem;letter-spacing:.04em;text-transform:uppercase;color:#cfe3d6}
+.timer b{font-size:1.35rem;font-variant-numeric:tabular-nums;letter-spacing:.01em;line-height:1.15}
+.timer.warn{background:var(--accent-soft);color:var(--accent)} .timer.warn .lbl{color:var(--accent)}
+.timer.crit{background:var(--danger);color:#fff} .timer.crit .lbl{color:#ffd9d4}
+@media (max-width:560px){
+  body.testing .brand{display:none}
+  .meta{justify-content:space-between}
+  .timer b{font-size:1.25rem}
+}
+
+.banner{max-width:820px;margin:10px auto 0;padding:10px 14px;border-radius:10px;font-size:.95rem;
+  background:var(--accent-soft);color:#6b3304;border:1px solid #efcf9c}
+.banner.err{background:var(--danger-soft);color:#7a1a12;border-color:#f0b3ac}
+.banner.ok{background:var(--brand-soft);color:#0e3d21;border-color:#b7d6c1}
+.banner-wrap{position:sticky;top:63px;z-index:19;padding:0 16px}
+.ribbon{background:#7a1a12;color:#fff;text-align:center;font-size:.85rem;font-weight:650;padding:4px 10px;letter-spacing:.02em}
+
+main{max-width:820px;margin:0 auto;padding:18px 16px 120px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:22px}
+.card+.card{margin-top:16px}
+@media (max-width:560px){.card{padding:18px 16px}}
+
+/* buttons */
+.btn{appearance:none;border:0;border-radius:12px;font:inherit;font-weight:650;padding:14px 22px;min-height:50px;cursor:pointer;
+  background:var(--soft);color:var(--ink);transition:background .12s, transform .05s}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--brand);color:#fff}
+.btn.primary:hover:not(:disabled){background:var(--brand-d)}
+.btn.ghost{background:transparent;border:1.5px solid var(--line)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.block{width:100%}
+:focus-visible{outline:3px solid #6fa583;outline-offset:2px}
+
+/* form */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+@media (max-width:560px){.grid2{grid-template-columns:1fr}}
+.field{margin:0 0 14px}
+.field label{display:block;font-weight:600;font-size:.95rem;margin-bottom:5px}
+.field label em{font-style:normal;color:var(--danger)}
+.field input,.field select{width:100%;font:inherit;padding:12px 13px;min-height:48px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+.field input:focus,.field select:focus{border-color:var(--brand);outline:3px solid #cfe3d6;outline-offset:0}
+.field .help{font-size:.84rem;color:var(--muted);margin-top:4px}
+.field.bad input,.field.bad select{border-color:var(--danger);background:#fff8f7}
+.field .msg{display:none;color:var(--danger);font-size:.86rem;margin-top:4px}
+.field.bad .msg{display:block}
+.formerr{display:none;background:var(--danger-soft);color:#7a1a12;border:1px solid #f0b3ac;border-radius:10px;padding:10px 14px;margin:0 0 14px;font-size:.95rem}
+.formerr.on{display:block}
+
+/* done */
+.done h1{margin-bottom:.3em}
+.receipt{display:inline-block;margin:6px 0 4px;padding:10px 16px;border:1.5px dashed #8aa797;border-radius:12px;background:var(--brand-soft);
+  font:700 1.4rem/1.2 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.12em;color:var(--brand-d)}
+.stat{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
+.stat div{background:var(--soft);border-radius:12px;padding:10px 16px}
+.stat b{display:block;font-size:1.35rem;line-height:1.2}
+.linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;font:inherit;cursor:pointer;padding:6px 0}
+
+/* overlay + modal */
+.overlay{position:fixed;inset:0;z-index:50;background:rgba(18,28,22,.55);display:grid;place-items:center;padding:20px}
+.box{background:#fff;border-radius:16px;max-width:460px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.box h3{margin-bottom:.4em}
+.box .row{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+.box .row .btn{flex:1;min-width:130px}
+.spin{width:30px;height:30px;border-radius:50%;border:4px solid var(--soft);border-top-color:var(--brand);animation:rot .9s linear infinite;margin-bottom:12px}
+@keyframes rot{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:3s}}
+
+
+/* halaman status */
+.kv{width:100%;border-collapse:collapse;margin:6px 0 16px;font-size:.98rem}
+.kv td{padding:8px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+.kv td:first-child{color:var(--muted);width:38%;padding-right:10px}
+.kv td b{font-weight:650;overflow-wrap:anywhere}
+.tag{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.82rem;font-weight:650;background:var(--brand-soft);color:var(--brand-d);margin-bottom:10px}
+.tag.warn{background:var(--accent-soft);color:var(--accent)}
+.choice{display:grid;gap:10px;margin:4px 0 16px}
+.choice label{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;background:#fff}
+.choice label:has(input:checked){border-color:var(--brand);background:var(--brand-soft)}
+.choice input{width:20px;height:20px;margin:2px 0 0;flex:none;accent-color:var(--brand)}
+.fixlist{display:grid;gap:10px;margin:6px 0 14px}
+.fixitem{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}
+.fixitem>label{display:flex;gap:10px;align-items:center;cursor:pointer;font-weight:600}
+.fixitem>label input{width:20px;height:20px;accent-color:var(--brand)}
+.fixitem .now{font-size:.88rem;color:var(--muted);margin:2px 0 0 30px}
+.fixitem .field{margin:8px 0 2px 30px}
+.nomor{display:block;text-align:center;margin:10px 0 6px;padding:16px;border:2px dashed #8aa797;border-radius:14px;background:var(--brand-soft);
+  font:800 2.1rem/1.1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.14em;color:var(--brand-d)}
+.result{text-align:center;padding:30px 22px}
+.result .big{font-size:1.9rem;font-weight:800;margin:6px 0 10px}
+.result.lulus .big{color:var(--ok)}
+.note{background:var(--soft);border-radius:12px;padding:12px 14px;font-size:.95rem;margin:0 0 14px;white-space:pre-line}
+.row2{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+.row2 .btn{flex:1;min-width:150px}
+.waprev{white-space:pre-wrap;font-size:.86rem;background:var(--soft);border-radius:10px;padding:10px 12px;margin:0 0 12px;max-height:220px;overflow:auto}
+a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.overlay{overflow-y:auto}
+.box{max-height:calc(100dvh - 40px);overflow-y:auto}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <div><b>Cek Status Pelamar</b><small>Beasiswa Arutmin Effort &amp; Vokasi 2026</small></div>
+    </div>
+  </div>
+</header>
+<div class="banner-wrap"><div class="banner" id="banner" role="status" hidden></div></div>
+
+<main id="main">
+  <section id="s-setup" hidden>
+    <div class="card"><h2>Halaman belum dikonfigurasi</h2>
+      <p>Alamat server (<code>SCRIPT_URL</code>) belum diisi. Hubungi panitia.</p>
+      <p class="muted">Untuk panitia: isi <code>SCRIPT_URL</code> dengan URL Web App yang sama seperti di halaman tes. Untuk mencoba tampilan, buka dengan <code>?demo=1</code>.</p></div>
+  </section>
+
+  <!-- 1. CEK -->
+  <section id="s-cek" hidden>
+    <form class="card" id="fCek" novalidate autocomplete="off">
+      <h1>Cek status pendaftaranmu</h1>
+      <p>Masukkan data yang sama seperti saat mendaftar beasiswa. Halaman ini memberi tahu apakah kamu lolos ke <b>Tes Pengetahuan Umum (TPU)</b>, menampilkan <b>Nomor Peserta</b> untuk masuk ke tes, dan nantinya menampilkan <b>hasil TPU</b>.</p>
+      <div class="formerr" id="cekErr" role="alert"></div>
+      <div class="field"><label for="c_nama">Nama lengkap <em>*</em></label>
+        <input id="c_nama" type="text" maxlength="100" autocomplete="off" autocapitalize="words">
+        <div class="msg">Isi nama lengkap.</div></div>
+      <div class="field"><label for="c_nim">NIM <em>*</em></label>
+        <input id="c_nim" type="text" maxlength="25" autocapitalize="characters" autocomplete="off">
+        <div class="msg">NIM hanya berisi huruf dan angka (5–25 karakter).</div></div>
+      <div class="field"><label for="c_hp">Nomor HP yang didaftarkan <em>*</em></label>
+        <input id="c_hp" type="tel" inputmode="tel" maxlength="20" placeholder="08xxxxxxxxxx" autocomplete="off">
+        <div class="msg">Nomor HP tidak valid. Contoh: 081234567890</div></div>
+      <button type="submit" class="btn primary block" id="cekGo">Cek Status</button>
+    </form>
+  </section>
+
+  <!-- 2. TIDAK DITEMUKAN -->
+  <section id="s-none" hidden>
+    <div class="card">
+      <h2>Data tidak ditemukan di daftar peserta TPU</h2>
+      <p>Kombinasi nama, NIM, dan nomor HP yang kamu masukkan tidak ada di daftar pelamar yang lolos ke Tes Pengetahuan Umum.</p>
+      <p class="muted">Periksa kembali pengetikan, terutama NIM dan nomor HP (harus sama dengan nomor yang kamu isi saat mendaftar). Jika kamu yakin datanya benar, hubungi panitia.</p>
+      <div class="row2"><button class="btn ghost" id="noneBack">Coba lagi</button><a class="btn primary" id="noneWa" target="_blank" rel="noopener" hidden>Hubungi Panitia (WA)</a></div>
+    </div>
+  </section>
+
+  <!-- 3. KONFIRMASI BIODATA -->
+  <section id="s-konf" hidden>
+    <div class="card">
+      <span class="tag">Lolos ke Tes Pengetahuan Umum</span>
+      <h2>Periksa biodatamu</h2>
+      <p>Pastikan data di bawah ini benar. Data inilah yang tercatat sebagai peserta tes.</p>
+      <table class="kv" id="kvKonf"></table>
+      <div id="needBox" hidden>
+        <p class="note">Data berikut belum ada di catatan panitia. Isi sekali dengan benar; setelah dikonfirmasi, perubahan hanya bisa lewat panitia.</p>
+        <div class="field" id="nTempatW"><label for="n_tempat">Tempat lahir <em>*</em></label>
+          <input id="n_tempat" type="text" maxlength="60" autocapitalize="words" autocomplete="off"><div class="msg">Isi tempat lahir.</div></div>
+        <div class="field" id="nLahirW"><label for="n_lahir">Tanggal lahir <em>*</em></label>
+          <input id="n_lahir" type="date" min="1980-01-01" max="2012-12-31"><div class="help">Tanggal lahir dipakai bersama Nomor Peserta untuk masuk ke tes.</div><div class="msg">Isi tanggal lahir yang valid.</div></div>
+        <div class="field" id="nFakW"><label for="n_fak">Fakultas <em>*</em></label>
+          <input id="n_fak" type="text" maxlength="100" autocapitalize="words" autocomplete="off"><div class="help">Jika kampusmu tidak memakai fakultas (misal jurusan di politeknik), tulis nama jurusan atau “-”.</div><div class="msg">Isi fakultas (atau “-”).</div></div>
+      </div>
+      <div class="field"><label for="n_email">Email aktif <em>*</em></label>
+        <input id="n_email" type="email" inputmode="email" maxlength="100" placeholder="nama@email.com" autocomplete="off"><div class="msg">Alamat email tidak valid.</div></div>
+
+      <h3>Apakah data di atas sudah benar?</h3>
+      <div class="choice">
+        <label><input type="radio" name="benar" value="ya"><span><b>Ya, data sudah benar</b></span></label>
+        <label><input type="radio" name="benar" value="tidak"><span><b>Ada yang tidak sesuai</b></span></label>
+      </div>
+      <div class="formerr" id="konfErr" role="alert"></div>
+
+      <div id="yaBox" hidden>
+        <button class="btn primary block" id="konfGo">Konfirmasi &amp; Tampilkan Nomor Peserta</button>
+      </div>
+      <div id="tidakBox" hidden>
+        <p>Centang data yang tidak sesuai, lalu tulis data yang benar. Permintaanmu dikirim ke panitia lewat WhatsApp. Setelah panitia memperbaiki, buka lagi halaman ini untuk konfirmasi.</p>
+        <div class="fixlist" id="fixList"></div>
+        <button class="btn primary block" id="waGo">Kirim Koreksi ke WA Panitia</button>
+      </div>
+      <p style="margin-top:14px"><button class="linkbtn" id="konfBack">Bukan kamu? Kembali</button></p>
+    </div>
+  </section>
+
+  <!-- 4. NOMOR PESERTA -->
+  <section id="s-nomor" hidden>
+    <div class="card">
+      <span class="tag">Terkonfirmasi</span>
+      <h2 id="nmHalo">Nomor Peserta kamu</h2>
+      <span class="nomor" id="nmNo">TPU-XXXXX</span>
+      <p style="text-align:center"><button class="btn ghost" id="nmCopy" type="button">Salin nomor</button></p>
+      <p><b>Catat atau screenshot nomor ini.</b> Untuk masuk ke Tes Pengetahuan Umum kamu memerlukan <b>Nomor Peserta</b> dan <b>tanggal lahir</b>. Jangan bagikan nomor ini kepada orang lain.</p>
+      <div class="note" id="nmInfo"></div>
+      <h3>Ringkasan biodata</h3>
+      <table class="kv" id="kvNomor"></table>
+      <form id="fEmail" novalidate autocomplete="off">
+        <div class="field"><label for="e_email">Email</label>
+          <input id="e_email" type="email" inputmode="email" maxlength="100" autocomplete="off"><div class="msg">Alamat email tidak valid.</div></div>
+        <button class="btn ghost" type="submit" id="eGo">Simpan perubahan email</button>
+      </form>
+      <p class="muted" style="margin-top:14px">Ada data lain yang keliru? Hubungi panitia sebelum hari tes. <a id="nmWa" target="_blank" rel="noopener" hidden>Chat panitia di WhatsApp</a></p>
+    </div>
+  </section>
+
+  <!-- 5. HASIL TPU -->
+  <section id="s-hasil" hidden>
+    <div class="card result" id="hsCard">
+      <p class="muted" id="hsNama"></p>
+      <h2>Hasil Tes Pengetahuan Umum</h2>
+      <div class="big" id="hsBig"></div>
+      <p id="hsTxt"></p>
+    </div>
+    <p style="text-align:center"><button class="linkbtn" id="hsBack">Kembali</button></p>
+  </section>
+</main>
+
+<div class="overlay" id="overlay" hidden>
+  <div class="box" role="alertdialog" aria-modal="true" aria-labelledby="ovT">
+    <div class="spin" id="ovSpin" aria-hidden="true"></div>
+    <h3 id="ovT">Memproses…</h3>
+    <div id="ovP" class="muted"></div>
+    <div class="row" id="ovRow" hidden></div>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+/* ============ KONFIGURASI (panitia) ============ */
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxbgiHgQYxTo2rMCIRkMjqAgiMIQfDBuPJrKG-2jzB0F3XnTpdQXlmRtRYg-wmtCQLU/exec';            // <-- URL Web App Apps Script yang SAMA dengan halaman tes (…/exec)
+const TES_URL = './';             // alamat halaman tes
+/* ================================================ */
+
+const qs = new URLSearchParams(location.search);
+const DEMO = !SCRIPT_URL && qs.get('demo') === '1';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const normNIM = s => String(s || '').replace(/\s+/g, '').toUpperCase();
+function normHP(s){ let p = String(s || '').replace(/\D+/g, ''); if (p.startsWith('62')) p = '0' + p.slice(2); else if (p.startsWith('8')) p = '0' + p; return p; }
+const okEmail = e => /^[^\s@"'<>=]+@[^\s@"'<>=]+\.[a-z]{2,}$/i.test(e) && e.length <= 100;
+const waNum = hp => hp ? '62' + hp.replace(/^0/, '') : '';
+const SECTIONS = ['setup', 'cek', 'none', 'konf', 'nomor', 'hasil'];
+function show(n){ SECTIONS.forEach(s => { $('s-' + s).hidden = s !== n; }); window.scrollTo(0, 0); }
+function banner(msg, kind, ms){ const b = $('banner'); b.textContent = msg; b.className = 'banner ' + (kind || ''); b.hidden = false; clearTimeout(banner.t); banner.t = setTimeout(() => { b.hidden = true; }, ms || 6000); }
+function bad(id, on){ $(id).closest('.field').classList.toggle('bad', !!on); return !on; }
+function err(id, msg){ const e = $(id); e.textContent = msg || ''; e.classList.toggle('on', !!msg); if (msg) e.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+function overlay(t, p, spin, btns){
+  $('ovT').textContent = t; $('ovP').innerHTML = p || ''; $('ovSpin').hidden = !spin;
+  const row = $('ovRow'); row.innerHTML = ''; row.hidden = !btns;
+  (btns || []).forEach(b => { const el = document.createElement('button'); el.className = 'btn ' + (b.cls || ''); el.textContent = b.label; el.onclick = b.fn; row.appendChild(el); });
+  $('overlay').hidden = false;
+}
+const overlayOff = () => { $('overlay').hidden = true; };
+
+/* ---------- API ---------- */
+async function api(payload, timeout = 20000){
+  if (DEMO) return demoApi(payload);
+  const ctl = new AbortController(); const to = setTimeout(() => ctl.abort(), timeout);
+  try {
+    const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload), headers: { 'Content-Type': 'text/plain;charset=utf-8' }, signal: ctl.signal, redirect: 'follow' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.json();
+  } finally { clearTimeout(to); }
+}
+function demoApi(p){
+  return new Promise(res => setTimeout(() => {
+    const K = 'arutmin_status_demo';
+    let db; try { db = JSON.parse(localStorage.getItem(K)); } catch(e){}
+    if (!db) db = { nama: 'Peserta Demo', nim: 'DEMO12345', tempat: '', lahir: '', univ: 'Universitas Lambung Mangkurat (ULM)', fak: '', jur: 'Teknik Pertambangan', hp: '081200000000', email: '', nomor: '', konf: false };
+    const save = () => localStorage.setItem(K, JSON.stringify(db));
+    const hasil = qs.get('hasil') === 'lulus' ? 'LULUS' : qs.get('hasil') === 'tidak' ? 'TIDAK' : null;
+    const view = () => ({ ok: true, k: 'demo', d: { nama: db.nama, nim: db.nim, tempat: db.tempat, lahir: db.lahir, univ: db.univ, fak: db.fak, jur: db.jur, hp: db.hp },
+      need: db.konf ? [] : ['tempat', 'lahir', 'fak'].filter(f => !db[f]), konfirmasi: db.konf, nomor: db.konf ? db.nomor : '', email: db.email,
+      hasil, info: 'Mode demo. Di sini tampil jadwal dan tautan Zoom TPU dari sheet Pengaturan.', wa: '081200000001' });
+    if (p.action === 'cek'){
+      if (normNIM(p.nim) !== db.nim || normHP(p.hp) !== db.hp) return res({ ok: false, err: 'TIDAK_DITEMUKAN', wa: '081200000001' });
+      return res(view());
+    }
+    if (p.action === 'konfirmasi'){
+      if (!db.konf){ const i = p.isi || {}; if (!db.tempat) db.tempat = i.tempat; if (!db.fak) db.fak = i.fak; if (!db.lahir){ const [Y, M, D] = String(i.lahir).split('-'); db.lahir = D + '-' + M + '-' + Y; } db.nomor = 'TPU-DEMO1'; db.konf = true; }
+      db.email = p.email; save(); return res(view());
+    }
+    if (p.action === 'koreksi') return res({ ok: true });
+    res({ ok: false, err: 'BAD_REQUEST' });
+  }, 250));
+}
+const ERR = {
+  TERLALU_SERING: 'Terlalu banyak percobaan gagal. Coba lagi 30 menit lagi atau hubungi panitia.',
+  TUTUP: 'Pengecekan status sedang ditutup sementara. Coba lagi nanti.',
+  DATA: 'Isian belum lengkap atau formatnya keliru.',
+  SESI: 'Sesi sudah berakhir. Silakan cek status lagi.',
+  SIBUK: 'Server sedang sibuk. Tunggu beberapa detik lalu coba lagi.',
+  BELUM_SIAP: 'Data pelamar belum dipasang oleh panitia.'
+};
+const NET = 'Tidak bisa terhubung ke server. Periksa koneksi internetmu lalu coba lagi.';
+
+/* ---------- state ---------- */
+let V = null; // respons terakhir dari server
+const LBL = { nama: 'Nama lengkap', nim: 'NIM', tempat: 'Tempat lahir', lahir: 'Tanggal lahir', univ: 'Universitas', fak: 'Fakultas', jur: 'Jurusan / Program Studi', hp: 'Nomor HP' };
+function kvRows(d, skip){ return ['nama', 'nim', 'tempat', 'lahir', 'univ', 'fak', 'jur', 'hp'].filter(f => !(skip || []).includes(f))
+  .map(f => '<tr><td>' + LBL[f] + '</td><td><b>' + esc(d[f] || '—') + '</b></td></tr>').join(''); }
+
+/* ---------- 1. cek ---------- */
+$('fCek').addEventListener('submit', async e => {
+  e.preventDefault(); err('cekErr', '');
+  const nama = $('c_nama').value.replace(/\s+/g, ' ').trim(), nim = normNIM($('c_nim').value), hp = normHP($('c_hp').value);
+  let ok = bad('c_nama', nama.length < 2) & bad('c_nim', !/^[A-Z0-9][A-Z0-9.\-\/]{4,24}$/.test(nim)) & bad('c_hp', !/^08\d{8,12}$/.test(hp));
+  if (!ok) return;
+  $('cekGo').disabled = true; overlay('Mencari data…', '', true);
+  try {
+    const r = await api({ action: 'cek', nama, nim, hp });
+    overlayOff();
+    if (!r.ok){
+      if (r.err === 'TIDAK_DITEMUKAN'){ const w = $('noneWa'); w.hidden = !r.wa; if (r.wa) w.href = 'https://wa.me/' + waNum(r.wa) + '?text=' + encodeURIComponent('Halo Panitia Beasiswa Arutmin, saya ' + nama + ' (NIM ' + nim + '). Data saya tidak ditemukan di halaman Cek Status TPU. Mohon bantuannya.'); show('none'); return; }
+      err('cekErr', ERR[r.err] || r.msg || 'Gagal memeriksa data.'); return;
+    }
+    route(r);
+  } catch(x){ overlayOff(); err('cekErr', NET); }
+  finally { $('cekGo').disabled = false; }
+});
+$('noneBack').addEventListener('click', () => show('cek'));
+
+function route(r){
+  V = r;
+  if (r.hasil) return showHasil(r);
+  if (r.konfirmasi) return showNomor(r);
+  showKonf(r);
+}
+
+/* ---------- 3. konfirmasi ---------- */
+function showKonf(r){
+  const d = r.d;
+  $('kvKonf').innerHTML = kvRows(d, r.need);
+  $('needBox').hidden = !r.need.length;
+  $('nTempatW').hidden = !r.need.includes('tempat'); $('nLahirW').hidden = !r.need.includes('lahir'); $('nFakW').hidden = !r.need.includes('fak');
+  $('n_email').value = r.email || '';
+  document.querySelectorAll('input[name=benar]').forEach(x => { x.checked = false; });
+  $('yaBox').hidden = true; $('tidakBox').hidden = true; err('konfErr', '');
+  const fields = ['nama', 'tempat', 'lahir', 'univ', 'fak', 'jur', 'hp'].filter(f => !r.need.includes(f));
+  $('fixList').innerHTML = fields.map(f =>
+    '<div class="fixitem" data-f="' + f + '"><label><input type="checkbox"> ' + LBL[f] + '</label>' +
+    '<div class="now">Tercatat: ' + esc(d[f] || '—') + '</div>' +
+    '<div class="field" hidden><label>' + LBL[f] + ' yang benar <em>*</em></label>' +
+    (f === 'lahir' ? '<input type="date" min="1980-01-01" max="2012-12-31">' : '<input type="' + (f === 'hp' ? 'tel' : 'text') + '" maxlength="100" autocomplete="off">') +
+    '<div class="msg">Isi data yang benar.</div></div></div>').join('');
+  $('fixList').querySelectorAll('.fixitem').forEach(it => {
+    const cb = it.querySelector('input[type=checkbox]'), fld = it.querySelector('.field');
+    cb.addEventListener('change', () => { fld.hidden = !cb.checked; if (cb.checked) fld.querySelector('input').focus(); });
+  });
+  show('konf');
+}
+document.querySelectorAll('input[name=benar]').forEach(x => x.addEventListener('change', () => {
+  const v = document.querySelector('input[name=benar]:checked').value;
+  $('yaBox').hidden = v !== 'ya'; $('tidakBox').hidden = v !== 'tidak'; err('konfErr', '');
+}));
+$('konfBack').addEventListener('click', () => { V = null; show('cek'); });
+
+function collectNeed(){
+  const isi = {}; let ok = true; const need = V.need;
+  if (need.includes('tempat')){ isi.tempat = $('n_tempat').value.replace(/\s+/g, ' ').trim(); ok = bad('n_tempat', isi.tempat.length < 2) && ok; }
+  if (need.includes('lahir')){ isi.lahir = $('n_lahir').value; const y = Number(isi.lahir.slice(0, 4)); ok = bad('n_lahir', !/^\d{4}-\d{2}-\d{2}$/.test(isi.lahir) || y < 1980 || y > 2012) && ok; }
+  if (need.includes('fak')){ isi.fak = $('n_fak').value.replace(/\s+/g, ' ').trim(); ok = bad('n_fak', isi.fak.length < 1) && ok; }
+  return ok ? isi : null;
+}
+const human = iso => { const [Y, M, D] = iso.split('-'); return D + '-' + M + '-' + Y; };
+
+$('konfGo').addEventListener('click', () => {
+  err('konfErr', '');
+  const isi = collectNeed(); const email = $('n_email').value.trim().toLowerCase();
+  const eok = bad('n_email', !okEmail(email));
+  if (!isi || !eok){ err('konfErr', 'Lengkapi isian yang ditandai merah.'); return; }
+  const d = Object.assign({}, V.d, isi.lahir ? { lahir: human(isi.lahir) } : {}, isi.tempat ? { tempat: isi.tempat } : {}, isi.fak ? { fak: isi.fak } : {});
+  overlay('Konfirmasi biodata', '<table class="kv">' + kvRows(d) + '<tr><td>Email</td><td><b>' + esc(email) + '</b></td></tr></table><p>Setelah dikonfirmasi, data selain email hanya bisa diubah lewat panitia.</p>', false, [
+    { label: 'Periksa lagi', cls: 'ghost', fn: overlayOff },
+    { label: 'Ya, konfirmasi', cls: 'primary', fn: () => sendKonf(email, isi) }
+  ]);
+});
+async function sendKonf(email, isi){
+  overlay('Menyimpan…', '', true);
+  try {
+    const r = await api({ action: 'konfirmasi', k: V.k, email, isi });
+    overlayOff();
+    if (!r.ok){
+      if (r.err === 'SESI'){ banner(ERR.SESI, 'err'); show('cek'); return; }
+      if (r.f) bad({ tempat: 'n_tempat', lahir: 'n_lahir', fak: 'n_fak' }[r.f], true);
+      if (r.err === 'EMAIL') bad('n_email', true);
+      err('konfErr', r.msg || ERR[r.err] || 'Gagal menyimpan.'); return;
+    }
+    r.k = V.k; route(r);
+  } catch(x){ overlayOff(); err('konfErr', NET); }
+}
+
+/* koreksi → WA panitia */
+$('waGo').addEventListener('click', async () => {
+  err('konfErr', '');
+  const items = []; let ok = true;
+  $('fixList').querySelectorAll('.fixitem').forEach(it => {
+    if (!it.querySelector('input[type=checkbox]').checked) return;
+    const inp = it.querySelector('.field input'); const f = it.dataset.f;
+    let v = inp.value.replace(/\s+/g, ' ').trim();
+    if (f === 'lahir' && v) v = human(v);
+    if (f === 'hp') v = normHP(v);
+    const fine = f === 'hp' ? /^08\d{8,12}$/.test(v) : v.length >= (f === 'fak' ? 1 : 2);
+    it.querySelector('.field').classList.toggle('bad', !fine); if (!fine) ok = false;
+    items.push({ f, v });
+  });
+  if (!items.length){ err('konfErr', 'Centang dulu data yang tidak sesuai.'); return; }
+  if (!ok){ err('konfErr', 'Isi data yang benar pada kolom yang dicentang.'); return; }
+  const d = V.d;
+  const msg = 'Halo Panitia Beasiswa Arutmin,\n\nSaya mengajukan koreksi data peserta Tes Pengetahuan Umum (TPU).\n\n' +
+    'Nama: ' + d.nama + '\nNIM: ' + d.nim + '\nUniversitas: ' + d.univ + '\n\nData yang perlu dikoreksi:\n' +
+    items.map((it, i) => (i + 1) + '. ' + LBL[it.f] + ': tertulis "' + (d[it.f] || '-') + '", seharusnya "' + it.v + '"').join('\n') +
+    '\n\nMohon dibantu perbaikannya. Terima kasih.';
+  overlay('Mencatat permintaan…', '', true);
+  try { await api({ action: 'koreksi', k: V.k, items }); } catch(x){ /* tetap lanjut ke WA */ }
+  if (V.wa){
+    const url = 'https://wa.me/' + waNum(V.wa) + '?text=' + encodeURIComponent(msg);
+    overlay('Lanjutkan di WhatsApp', '<p>Pesan koreksi sudah disiapkan. Tekan tombol di bawah untuk membuka WhatsApp lalu <b>kirim pesannya</b>. Setelah panitia memperbaiki data, buka lagi halaman ini untuk konfirmasi.</p><div class="waprev">' + esc(msg) + '</div>', false, [
+      { label: 'Tutup', cls: 'ghost', fn: overlayOff },
+      { label: 'Buka WhatsApp', cls: 'primary', fn: () => { window.open(url, '_blank', 'noopener'); overlayOff(); } }
+    ]);
+  } else {
+    overlay('Kirim ke panitia', '<p>Salin pesan berikut dan kirim ke panitia melalui WhatsApp grup/kontak panitia.</p><div class="waprev">' + esc(msg) + '</div>', false, [
+      { label: 'Tutup', cls: 'ghost', fn: overlayOff },
+      { label: 'Salin pesan', cls: 'primary', fn: () => { copy(msg); banner('Pesan disalin.', 'ok'); } }
+    ]);
+  }
+});
+
+/* ---------- 4. nomor peserta ---------- */
+function showNomor(r){
+  $('nmHalo').textContent = 'Halo, ' + r.d.nama + '. Ini Nomor Peserta kamu';
+  $('nmNo').textContent = r.nomor;
+  $('nmInfo').textContent = r.info || ''; $('nmInfo').hidden = !r.info;
+  $('kvNomor').innerHTML = kvRows(r.d) + '<tr><td>Halaman tes</td><td><b><a href="' + esc(TES_URL) + '">' + esc(new URL(TES_URL, location.href).href) + '</a></b></td></tr>';
+  $('e_email').value = r.email || '';
+  const w = $('nmWa'); w.hidden = !r.wa; if (r.wa) w.href = 'https://wa.me/' + waNum(r.wa);
+  show('nomor');
+}
+function copy(t){ if (navigator.clipboard) navigator.clipboard.writeText(t).catch(() => {}); else { const a = document.createElement('textarea'); a.value = t; document.body.appendChild(a); a.select(); try { document.execCommand('copy'); } catch(e){} a.remove(); } }
+$('nmCopy').addEventListener('click', () => { copy($('nmNo').textContent); banner('Nomor Peserta disalin.', 'ok', 3000); });
+$('fEmail').addEventListener('submit', async e => {
+  e.preventDefault();
+  const email = $('e_email').value.trim().toLowerCase();
+  if (!bad('e_email', !okEmail(email))) return;
+  $('eGo').disabled = true;
+  try {
+    const r = await api({ action: 'konfirmasi', k: V.k, email });
+    if (!r.ok){ if (r.err === 'SESI'){ banner(ERR.SESI, 'err'); show('cek'); } else banner(r.msg || ERR[r.err] || 'Gagal menyimpan.', 'err'); return; }
+    V.email = r.email; banner('Email tersimpan.', 'ok', 3000);
+  } catch(x){ banner(NET, 'err'); }
+  finally { $('eGo').disabled = false; }
+});
+
+/* ---------- 5. hasil ---------- */
+function showHasil(r){
+  const c = $('hsCard'); c.className = 'card result' + (r.hasil === 'LULUS' ? ' lulus' : '');
+  $('hsNama').textContent = r.d.nama + ' · ' + (r.nomor || r.d.nim);
+  if (r.hasil === 'LULUS'){
+    $('hsBig').textContent = 'LULUS';
+    $('hsTxt').innerHTML = 'Selamat! Kamu <b>lulus Tes Pengetahuan Umum</b> dan berhak melanjutkan ke tahap <b>Tes Wawancara</b>, yang dilaksanakan secara <b>offline di kampus</b>. Tunggu informasi jadwal dan tempat wawancara dari panitia.';
+  } else if (r.hasil === 'TIDAK'){
+    $('hsBig').textContent = 'TIDAK LULUS';
+    $('hsTxt').innerHTML = 'Terima kasih telah mengikuti Tes Pengetahuan Umum. Kamu <b>belum lulus</b> pada tahap ini. Tetap semangat belajar dan berkarya.';
+  } else {
+    $('hsBig').textContent = 'Belum tersedia';
+    $('hsTxt').innerHTML = 'Hasil tesmu belum tersedia. Hubungi panitia untuk informasi lebih lanjut.';
+  }
+  show('hasil');
+}
+$('hsBack').addEventListener('click', () => { V = null; show('cek'); });
+
+/* ---------- init ---------- */
+if (!SCRIPT_URL && !DEMO){ show('setup'); return; }
+if (DEMO){ const b = document.createElement('div'); b.className = 'ribbon'; b.textContent = 'MODE DEMO — data contoh: NIM DEMO12345, HP 081200000000'; document.body.prepend(b); }
+show('cek');
+})();
+</script>
+</body>
+</html>

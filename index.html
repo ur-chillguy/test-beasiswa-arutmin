@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Content-Security-Policy" content="connect-src 'self' blob: data: https://script.google.com https://script.googleusercontent.com https://storage.googleapis.com https://cdn.jsdelivr.net">
 <meta name="color-scheme" content="light">
 <title>Tes Pengetahuan Umum · Beasiswa Arutmin 2026</title>
 <style>
@@ -156,6 +157,31 @@ main{max-width:820px;margin:0 auto;padding:18px 16px 120px}
 
 body.testing #s-test, body.testing #s-test *:not(input):not(textarea){-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 @media print{body *{display:none!important}}
+
+/* pemantauan kamera */
+.camchip{position:fixed;left:12px;bottom:86px;z-index:18;width:104px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);overflow:hidden;font-size:.72rem;line-height:1.25}
+.camchip.hide{left:-400px}
+.camchip video{display:block;width:104px;height:78px;object-fit:cover;background:#222;transform:scaleX(-1)}
+.camchip .lab{display:flex;align-items:center;gap:6px;padding:4px 7px;color:var(--muted)}
+.camchip .lab i{flex:none;width:9px;height:9px;border-radius:50%;background:#9aa39b}
+.camchip.on .lab i{background:var(--ok)}
+.camchip.away .lab i,.camchip.down .lab i{background:#c08a1e}
+.camchip.noface .lab i,.camchip.camlost .lab i{background:var(--danger)}
+@media (max-width:560px){.camchip{width:84px}.camchip video{width:84px;height:63px}}
+.camov{z-index:60}
+.camov video{width:100%;max-width:300px;aspect-ratio:4/3;object-fit:cover;border-radius:12px;background:#222;transform:scaleX(-1);display:block;margin:0 auto 12px}
+.cbar{height:8px;border-radius:99px;background:var(--soft);overflow:hidden;margin:10px 0 0}
+.cbar i{display:block;height:100%;width:0;background:var(--brand);transition:width .25s linear}
+.cekt{width:100%;border-collapse:collapse;font-size:.95rem;margin:10px 0 14px}
+.cekt td{padding:6px 8px;border-bottom:1px solid var(--line)}
+.cekt td:first-child{color:var(--muted);width:46%}
+.cekst{display:inline-block;padding:3px 10px;border-radius:99px;font-weight:650;background:var(--soft)}
+.cekst.on{background:var(--brand-soft);color:var(--brand-d)}
+.cekst.away,.cekst.down{background:var(--accent-soft);color:var(--accent)}
+.cekst.noface,.cekst.camlost{background:var(--danger-soft);color:var(--danger)}
+.note-np{background:var(--brand-soft,#e8f1ec);border-radius:12px;padding:10px 14px;font-size:.95rem}
+.overlay{overflow-y:auto}
+.box{max-height:calc(100dvh - 40px);overflow-y:auto}
 </style>
 </head>
 <body>
@@ -189,6 +215,7 @@ body.testing #s-test, body.testing #s-test *:not(input):not(textarea){-webkit-us
     <div class="card">
       <h1>Selamat datang, calon penerima beasiswa</h1>
       <p>Tes ini adalah salah satu tahap seleksi Beasiswa Arutmin Effort &amp; Vokasi 2026, sebelum tahap wawancara. Bacalah ketentuan berikut dengan teliti.</p>
+      <p class="note-np">Siapkan <b>Nomor Peserta</b> dan <b>tanggal lahir</b>-mu. Belum punya Nomor Peserta? Ambil dulu di <a href="status.html">halaman Cek Status Pelamar</a>.</p>
       <div class="facts">
         <div class="fact"><b>90</b><span>soal pilihan ganda</span></div>
         <div class="fact"><b>6</b><span>pilihan jawaban</span></div>
@@ -200,73 +227,36 @@ body.testing #s-test, body.testing #s-test *:not(input):not(textarea){-webkit-us
         <li>Setiap soal punya <b>batas waktu sendiri</b> (30 detik sampai ±2 menit, tertera di layar). Jika habis, tes <b>pindah otomatis</b> ke soal berikutnya: opsi yang sudah kamu pilih tetap tersimpan, kalau belum memilih soal itu dihitung kosong.</li>
         <li>Batas total <b>105 menit</b> dihitung sejak tombol <b>Mulai Tes</b> ditekan dan terus berjalan walaupun halaman ditutup. Saat waktu habis, jawaban tidak bisa diisi lagi dan soal yang belum terjawab dihitung kosong.</li>
         <li>Jawaban <b>tersimpan otomatis</b> setiap kali kamu menekan Simpan &amp; Lanjut. Jika sinyal terputus, jawaban akan menunggu dan terkirim sendiri saat koneksi pulih. Pastikan baterai dan kuota cukup.</li>
-        <li>Jika halaman tertutup atau perangkat mati, buka kembali tautan ini dan isi <b>NIM dan nomor HP yang sama</b> untuk melanjutkan dari soal terakhir. Setiap peserta hanya dapat mengerjakan <b>satu kali</b>.</li>
+        <li>Jika halaman tertutup atau perangkat mati, buka kembali tautan ini dan masuk lagi dengan <b>Nomor Peserta dan tanggal lahir yang sama</b> untuk melanjutkan dari soal terakhir. Setiap peserta hanya dapat mengerjakan <b>satu kali</b>.</li>
         <li>Kerjakan secara <b>mandiri dan jujur</b>. Tes berjalan dalam <b>mode layar penuh</b>. Berpindah tab/aplikasi dan keluar dari layar penuh <b>dicatat</b> oleh sistem (tes tertutup sampai kamu kembali ke layar penuh, timer tetap berjalan). Tidak diperlukan bantuan buku, internet, AI, maupun orang lain.</li>
+        <li><b>Kamera wajib aktif</b> dan tes <b>harus dikerjakan dengan laptop/PC</b> (bukan HP atau tablet), dengan Zoom tetap tersambung di laptop yang sama. Selama tes, sistem memantau seberapa sering pandanganmu beralih dari layar dan apakah ada HP di depan kamera. Lirikan singkat tidak dihitung. <b>Video diproses di perangkatmu dan tidak direkam atau dikirim</b>; yang diterima panitia hanya ringkasan angka beserta waktu kejadiannya, yang dipakai untuk memeriksa kewajaran pengerjaan tes dan bukan satu-satunya dasar keputusan. Duduk dengan wajah terlihat jelas dan cahaya cukup.</li>
       </ol>
       <label class="check"><input type="checkbox" id="agree"><span>Saya sudah membaca dan menyetujui ketentuan di atas, serta bersedia mengerjakan tes ini dengan jujur.</span></label>
-      <button class="btn primary block" id="toForm" disabled>Lanjut ke Biodata</button>
+      <label class="check"><input type="checkbox" id="agreeCam"><span>Saya mengerti dan menyetujui kamera laptop saya dipakai untuk pemantauan perhatian selama tes, sebagaimana dijelaskan pada poin tentang kamera di atas.</span></label>
+      <button class="btn primary block" id="toForm" disabled>Lanjut ke Masuk Peserta</button>
     </div>
   </section>
 
   <!-- BIODATA -->
   <section id="s-form" hidden>
     <form class="card" id="form" novalidate autocomplete="off">
-      <h2>Biodata peserta</h2>
-      <p class="muted">Isi dengan benar sesuai identitas dan data kampusmu. Semua kolom wajib diisi.</p>
+      <h2>Masuk sebagai peserta</h2>
+      <p class="muted">Gunakan Nomor Peserta dari halaman Cek Status Pelamar dan tanggal lahir yang tercatat di sana.</p>
       <div class="formerr" id="formErr" role="alert"></div>
 
-      <div class="field"><label for="f_nama">Nama lengkap <em>*</em></label>
-        <input id="f_nama" name="nama" type="text" maxlength="100" autocomplete="off" autocapitalize="words">
-        <div class="msg">Isi nama lengkap (minimal 3 huruf).</div></div>
+      <div class="field"><label for="f_nomor">Nomor Peserta <em>*</em></label>
+        <input id="f_nomor" name="nomor" type="text" maxlength="12" placeholder="TPU-XXXXX" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <div class="msg">Format Nomor Peserta: TPU- diikuti 5 huruf/angka.</div></div>
 
-      <div class="field"><label for="f_nim">NIM <em>*</em></label>
-        <input id="f_nim" name="nim" type="text" maxlength="25" autocapitalize="characters" autocomplete="off" inputmode="text">
-        <div class="msg">NIM hanya berisi huruf dan angka (5–25 karakter).</div></div>
+      <div class="field"><label for="f_tgl">Tanggal lahir <em>*</em></label>
+        <input id="f_tgl" name="tgl" type="date" min="1980-01-01" max="2012-12-31">
+        <div class="msg">Isi tanggal lahir yang valid.</div></div>
 
-      <div class="grid2">
-        <div class="field"><label for="f_tempat">Tempat lahir <em>*</em></label>
-          <input id="f_tempat" name="tempat" type="text" maxlength="60" autocomplete="off" autocapitalize="words">
-          <div class="msg">Isi tempat lahir.</div></div>
-        <div class="field"><label for="f_tgl">Tanggal lahir <em>*</em></label>
-          <input id="f_tgl" name="tgl" type="date" min="1980-01-01" max="2012-12-31">
-          <div class="msg">Isi tanggal lahir yang valid.</div></div>
-      </div>
-
-      <div class="field"><label for="f_univ">Universitas <em>*</em></label>
-        <select id="f_univ" name="univ">
-          <option value="">Pilih universitas…</option>
-          <option>Universitas Lambung Mangkurat (ULM)</option>
-          <option>UIN Antasari Banjarmasin</option>
-          <option>Poltekkes Kemenkes Banjarmasin</option>
-          <option>Politeknik Negeri Tanah Laut (Politala)</option>
-          <option value="__lain">Lainnya…</option>
-        </select>
-        <div class="msg">Pilih universitas.</div></div>
-      <div class="field" id="univLainWrap" hidden><label for="f_univ2">Nama universitas <em>*</em></label>
-        <input id="f_univ2" type="text" maxlength="100" autocomplete="off">
-        <div class="msg">Tulis nama universitas.</div></div>
-
-      <div class="field"><label for="f_fak">Fakultas <em>*</em></label>
-        <input id="f_fak" name="fak" type="text" maxlength="100" autocomplete="off" autocapitalize="words">
-        <div class="help">Jika kampusmu tidak memakai fakultas (misal jurusan di politeknik), tulis nama jurusan atau “-”.</div>
-        <div class="msg">Isi fakultas (atau “-”).</div></div>
-
-      <div class="field"><label for="f_jur">Jurusan / Program Studi <em>*</em></label>
-        <input id="f_jur" name="jur" type="text" maxlength="100" autocomplete="off" autocapitalize="words">
-        <div class="msg">Isi jurusan atau program studi.</div></div>
-
-      <div class="field"><label for="f_hp">Nomor HP (aktif, sebaiknya WhatsApp) <em>*</em></label>
-        <input id="f_hp" name="hp" type="tel" inputmode="tel" maxlength="20" placeholder="08xxxxxxxxxx" autocomplete="off">
-        <div class="msg">Nomor HP tidak valid. Contoh: 081234567890</div></div>
-
-      <div class="field" id="kodeWrap" hidden><label for="f_kode">Kode akses <em>*</em></label>
-        <input id="f_kode" name="kode" type="text" maxlength="40" autocomplete="off" autocapitalize="characters">
-        <div class="help">Kode diberikan oleh panitia.</div>
-        <div class="msg">Isi kode akses.</div></div>
+      <p class="muted" style="font-size:.92rem">Belum punya Nomor Peserta atau lupa? Buka <a href="status.html">Cek Status Pelamar</a>, masukkan nama, NIM, dan nomor HP, lalu nomormu akan tampil lagi.</p>
 
       <div class="row" style="display:flex;gap:10px;margin-top:6px">
         <button type="button" class="btn ghost" id="backIntro">Kembali</button>
-        <button type="submit" class="btn primary" id="goStart" style="flex:1">Periksa Data</button>
+        <button type="submit" class="btn primary" id="goStart" style="flex:1">Masuk</button>
       </div>
     </form>
   </section>
@@ -305,7 +295,47 @@ body.testing #s-test, body.testing #s-test *:not(input):not(textarea){-webkit-us
     </div>
   </section>
 
+  <!-- CEK KAMERA (?cek=1) -->
+  <section id="s-cek" hidden>
+    <div class="card">
+      <h2>Cek kamera dan pemantauan</h2>
+      <p class="muted">Halaman uji ini <b>tidak mengirim data apa pun</b> ke panitia. Jalankan sebelum hari tes, di laptop yang akan dipakai.</p>
+      <ol class="rules">
+        <li>Buka Zoom dan nyalakan kamera di Zoom, lalu kembali ke halaman ini dan tekan <b>Mulai cek kamera</b>. Jika gambar kamera di bawah tetap hidup, kamera bisa dipakai bersama Zoom.</li>
+        <li>Tatap tengah layar saat kalibrasi. Status harus <b>Terpantau baik</b>.</li>
+        <li>Menunduklah seperti melihat HP di pangkuan selama 3 detik: status harus berubah menjadi <b>Menunduk</b>. Toleh ke samping 3 detik: <b>Pandangan beralih</b>. Tutup kamera dengan tangan: <b>Wajah tidak terlihat</b>.</li>
+        <li>Lirikan di bawah 2,5 detik tidak dihitung sebagai episode.</li>
+      </ol>
+      <div id="cekPanel" hidden>
+        <table class="cekt">
+          <tr><td>Status</td><td><span class="cekst" id="ck_st">–</span></td></tr>
+          <tr><td>Jumlah wajah terlihat</td><td id="ck_n">–</td></tr>
+          <tr><td>Toleh dari baseline (°)</td><td id="ck_yaw">–</td></tr>
+          <tr><td>Menunduk dari baseline (°)</td><td id="ck_pit">–</td></tr>
+          <tr><td>Mata ke samping / ke bawah</td><td id="ck_eye">–</td></tr>
+          <tr><td>HP terdeteksi</td><td id="ck_ph">–</td></tr>
+          <tr><td>Episode (berpaling / menunduk / wajah hilang / HP)</td><td id="ck_ep">–</td></tr>
+          <tr><td>Skor pengalihan (uji)</td><td id="ck_sc">–</td></tr>
+          <tr><td>Waktu proses per frame</td><td id="ck_ms">–</td></tr>
+        </table>
+      </div>
+      <button class="btn primary block" id="cekGo" type="button">Mulai cek kamera</button>
+    </div>
+  </section>
+
 </main>
+
+<div class="camchip hide" id="camChip" aria-live="off"><video id="gzVid" muted playsinline autoplay></video><div class="lab"><i></i><span id="camLab">Menyiapkan…</span></div></div>
+
+<div class="overlay camov" id="camOv" hidden>
+  <div class="box" role="dialog" aria-modal="true" aria-labelledby="camT">
+    <video id="camPrev" muted playsinline autoplay></video>
+    <h3 id="camT">Kalibrasi kamera</h3>
+    <p id="camP" class="muted"></p>
+    <div class="cbar"><i id="camBar"></i></div>
+    <div class="row" id="camRow" hidden></div>
+  </div>
+</div>
 
 <div class="sr" id="live" aria-live="polite"></div>
 
@@ -324,6 +354,8 @@ body.testing #s-test, body.testing #s-test *:not(input):not(textarea){-webkit-us
 
 /* ============ KONFIGURASI (panitia) ============ */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxbgiHgQYxTo2rMCIRkMjqAgiMIQfDBuPJrKG-2jzB0F3XnTpdQXlmRtRYg-wmtCQLU/exec';          // <-- tempel URL Web App Apps Script (…/exec) di antara tanda kutip
+const CAM_REQUIRED = true;      // true = tes tidak bisa dimulai tanpa kamera aktif; false = tes tetap jalan, ditandai "Kamera tidak aktif"
+const LAPTOP_ONLY  = true;      // true = HP/tablet ditolak
 const TOTAL_MIN  = 105;         // hanya dipakai mode demo; durasi asli ditentukan server (Code.gs)
 /* ================================================ */
 
@@ -359,13 +391,13 @@ const inFS = () => !!(document.fullscreenElement || document.webkitFullscreenEle
 async function enterFS(){ try { const el = document.documentElement; await (el.requestFullscreen ? el.requestFullscreen() : el.webkitRequestFullscreen()); return true; } catch(e){ return false; } }
 function exitFS(){ try { if (inFS()) (document.exitFullscreen ? document.exitFullscreen() : document.webkitExitFullscreen()); } catch(e){} }
 function fsGate(){
-  if (!FS_OK || !S || S.done || finishing || $('s-test').hidden || inFS() || gateOpen) return;
+  if (!FS_OK || !S || S.done || finishing || $('s-test').hidden || inFS() || gateOpen || camGateOpen) return;
   gateOpen = true;
   overlay('Aktifkan layar penuh', 'Tes dikerjakan dalam mode layar penuh. Tekan tombol di bawah untuk melanjutkan. Timer tetap berjalan selama layar ini tampil.', false, [
     { label: 'Masuk layar penuh', cls: 'primary', fn: async () => {
       const ok = await enterFS();
       if (!ok){ S.fsNA = true; save(); banner('Layar penuh tidak dapat diaktifkan di perangkat ini. Tes tetap dilanjutkan.', '', 6000); }
-      gateOpen = false; overlayOff(); } }
+      gateOpen = false; overlayOff(); if (camPending) camResume(); } }
   ]);
 }
 let unloading = false;
@@ -373,7 +405,7 @@ window.addEventListener('pagehide', () => { unloading = true; });
 function onFSChange(){
   if (unloading || !S || S.done || finishing || $('s-test').hidden) return;   // refresh/tutup halaman bukan pelanggaran
   if (!inFS()){ S.fs = (S.fs || 0) + 1; save(); fsGate(); }
-  else if (gateOpen){ gateOpen = false; overlayOff(); }
+  else if (gateOpen && !camGateOpen){ gateOpen = false; overlayOff(); }
 }
 document.addEventListener('fullscreenchange', onFSChange); document.addEventListener('webkitfullscreenchange', onFSChange);
 const nowSrv = () => clk.server + (performance.now() - clk.perf);
@@ -384,7 +416,7 @@ function load(){ try { const r = localStorage.getItem(LS); return r ? JSON.parse
 function wipe(){ try { localStorage.removeItem(LS); } catch(e){} }
 
 function show(name){
-  for (const n of ['setup','intro','form','test','done']) $('s-' + n).hidden = (n !== name);
+  for (const n of ['setup','intro','form','test','done','cek']) $('s-' + n).hidden = (n !== name);
   document.body.classList.toggle('testing', name === 'test');
   $('meta').hidden = (name !== 'test');
   window.scrollTo(0, 0);
@@ -424,6 +456,10 @@ function demoApi(p){
     let d; try { d = JSON.parse(localStorage.getItem(K) || '{}'); } catch(e){ d = {}; }
     const now = Date.now(); const ok = o => Object.assign({ ok: true, now }, o);
     if (p.action === 'ping') return res(ok({ requireCode: false }));
+    if (p.action === 'masuk'){
+      if (String(p.nomor).toUpperCase().replace(/^TPU-/, '') !== 'DEMO1' || p.lahir !== '2006-05-01') return res({ ok: false, err: 'MASUK', msg: 'Nomor Peserta atau tanggal lahir tidak sesuai.' });
+      return res({ ok: true, nomor: 'TPU-DEMO1', d: { nama: 'Peserta Demo', nim: 'DEMO12345', tempat: 'Banjarmasin', lahir: '01-05-2006', univ: 'Universitas Lambung Mangkurat', fak: 'Fakultas Teknik', jur: 'Teknik Pertambangan', hp: '081200000000' } });
+    }
     if (p.action === 'start'){
       const dur = (Number(qs.get('menit')) || TOTAL_MIN) * 60000;
       d = { nim: String(p.nim).toUpperCase(), token: 'DEMO' + Math.random().toString(36).slice(2, 10), seed: Math.floor(Math.random() * 4294967296), deadline: now + dur, ans: {} };
@@ -432,94 +468,88 @@ function demoApi(p){
     }
     if (p.action === 'resume') return res(ok({ nim: d.nim, token: d.token, seed: d.seed, deadline: d.deadline, answered: Object.keys(d.ans || {}).map(q => ({ q, o: d.ans[q] })) }));
     if (p.action === 'answer'){ (p.answers || []).forEach(a => { d.ans[a.q] = a.o; }); localStorage.setItem(K, JSON.stringify(d)); return res(ok({ saved: (p.answers || []).map(a => a.q), dup: [], rejected: [] })); }
+    if (p.action === 'gaze'){ try { localStorage.setItem('arutmin_tes_demo_gaze', JSON.stringify(p)); } catch(e){} return res(ok({ id: 1 })); }
     if (p.action === 'finish') return res(ok({ count: Object.keys(d.ans || {}).length, receipt: 'DEMO-0000', status: 'Selesai' }));
     res({ ok: false, err: 'BAD_REQUEST' });
   }, 120));
 }
 
 /* ---------- intro & form ---------- */
-$('agree').addEventListener('change', e => { $('toForm').disabled = !e.target.checked; });
-$('toForm').addEventListener('click', () => { show('form'); $('f_nama').focus(); });
+const syncToForm = () => { $('toForm').disabled = !($('agree').checked && $('agreeCam').checked); };
+$('agree').addEventListener('change', syncToForm); $('agreeCam').addEventListener('change', syncToForm);
+$('toForm').addEventListener('click', () => {
+  if (LAPTOP_ONLY && isMobile()){ banner('Tes ini harus dikerjakan dengan laptop/PC, bukan HP atau tablet. Buka tautan ini di laptop.', 'err', 12000); return; }
+  show('form'); $('f_nomor').focus();
+});
 $('backIntro').addEventListener('click', () => show('intro'));
-$('f_univ').addEventListener('change', e => { $('univLainWrap').hidden = e.target.value !== '__lain'; });
 
 const normNIM = s => String(s || '').replace(/\s+/g, '').toUpperCase();
 function normHP(s){ let p = String(s || '').replace(/\D+/g, ''); if (p.startsWith('62')) p = '0' + p.slice(2); else if (p.startsWith('8')) p = '0' + p; return p; }
 function bad(id, on){ const f = $(id).closest('.field'); f.classList.toggle('bad', !!on); return !on; }
-function formData(){
-  const univSel = $('f_univ').value;
-  return {
-    nama: $('f_nama').value.replace(/\s+/g, ' ').trim(),
-    nim: normNIM($('f_nim').value),
-    tempat: $('f_tempat').value.replace(/\s+/g, ' ').trim(),
-    tgl: $('f_tgl').value,
-    univ: univSel === '__lain' ? $('f_univ2').value.replace(/\s+/g, ' ').trim() : univSel,
-    univSel,
-    fak: $('f_fak').value.replace(/\s+/g, ' ').trim(),
-    jur: $('f_jur').value.replace(/\s+/g, ' ').trim(),
-    hp: normHP($('f_hp').value),
-    kode: $('f_kode').value.trim()
-  };
-}
+function normNomor(s){ const t = String(s || '').replace(/\s+/g, '').toUpperCase(); return /^[A-Z0-9]{5}$/.test(t) ? 'TPU-' + t : t; }
+function formData(){ return { nomor: normNomor($('f_nomor').value), tgl: $('f_tgl').value }; }
 function validate(d){
   let ok = true; const first = [];
   const chk = (id, cond) => { const v = bad(id, !cond); if (!v){ ok = false; first.push(id); } };
-  chk('f_nama', d.nama.length >= 3 && /[A-Za-z]/.test(d.nama));
-  chk('f_nim', /^[A-Z0-9][A-Z0-9.\-\/]{4,24}$/.test(d.nim));
-  chk('f_tempat', d.tempat.length >= 2);
+  chk('f_nomor', /^TPU-[A-Z0-9]{5}$/.test(d.nomor));
   const y = d.tgl ? Number(d.tgl.slice(0, 4)) : 0;
   chk('f_tgl', /^\d{4}-\d{2}-\d{2}$/.test(d.tgl) && y >= 1980 && y <= 2012);
-  chk('f_univ', !!d.univSel);
-  if (d.univSel === '__lain') chk('f_univ2', d.univ.length >= 3);
-  chk('f_fak', d.fak.length >= 1);
-  chk('f_jur', d.jur.length >= 2);
-  chk('f_hp', /^08\d{8,12}$/.test(d.hp));
-  if (!$('kodeWrap').hidden) chk('f_kode', d.kode.length >= 1);
   if (!ok) $(first[0]).focus();
   return ok;
 }
-function ttlText(d){ const [Y, M, D] = d.tgl.split('-'); return d.tempat + ', ' + D + '-' + M + '-' + Y; }
+function ttlText(d){ return [d.tempat, d.lahir].filter(Boolean).join(', '); }
 function formError(msg){ const e = $('formErr'); e.textContent = msg || ''; e.classList.toggle('on', !!msg); if (msg) e.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
 
-$('form').addEventListener('submit', e => {
+$('form').addEventListener('submit', async e => {
   e.preventDefault(); formError('');
-  const d = formData(); if (!validate(d)) return;
+  const f = formData(); if (!validate(f)) return;
+  $('goStart').disabled = true; overlay('Memeriksa Nomor Peserta…', '', true);
+  let r;
+  try { r = await api({ action: 'masuk', nomor: f.nomor, lahir: f.tgl }, 20000); }
+  catch(x){ overlayOff(); $('goStart').disabled = false; formError('Tidak bisa terhubung ke server. Periksa koneksi internetmu lalu coba lagi.'); return; }
+  $('goStart').disabled = false;
+  if (!r.ok){ overlayOff(); if (r.err === 'MASUK' || r.err === 'TERLALU_SERING') bad('f_nomor', true); formError(ERR_MSG[r.err] || r.msg || 'Gagal masuk.'); return; }
+  const d = Object.assign({}, r.d, { nomor: r.nomor, tgl: f.tgl });
   overlay('Periksa kembali datamu', '', false, [
-    { label: 'Perbaiki', cls: 'ghost', fn: overlayOff },
+    { label: 'Bukan saya', cls: 'ghost', fn: () => { overlayOff(); formError('Jika biodata keliru, ajukan koreksi lewat halaman Cek Status Pelamar atau hubungi panitia sebelum memulai tes.'); } },
     { label: 'Data benar, Mulai Tes', cls: 'primary', fn: () => doStart(d) }
   ]);
   $('ovP').innerHTML = '';
   const ul = document.createElement('div'); ul.style.cssText = 'font-size:.95rem;line-height:1.5;margin-bottom:6px';
-  ul.innerHTML = [['Nama', d.nama], ['NIM', d.nim], ['TTL', ttlText(d)], ['Universitas', d.univ], ['Fakultas', d.fak], ['Jurusan', d.jur], ['No. HP', d.hp]]
-    .map(r => '<div><span class="muted">' + r[0] + ':</span> <b>' + esc(r[1]) + '</b></div>').join('') +
+  ul.innerHTML = [['Nomor Peserta', d.nomor], ['Nama', d.nama], ['NIM', d.nim], ['TTL', ttlText(d)], ['Universitas', d.univ], ['Fakultas', d.fak], ['Jurusan', d.jur], ['No. HP', d.hp]]
+    .map(x => '<div><span class="muted">' + x[0] + ':</span> <b>' + esc(x[1] || '-') + '</b></div>').join('') +
     '<p style="margin-top:12px"><b>Timer ' + (DEMO ? (Number(qs.get('menit')) || TOTAL_MIN) : 105) + ' menit langsung berjalan</b> begitu kamu menekan tombol mulai dan tidak bisa dihentikan.</p>';
   $('ovP').appendChild(ul); $('ovSpin').hidden = true;
 });
 
 const ERR_MSG = {
   SUDAH_SELESAI: 'NIM ini sudah menyelesaikan tes sehingga tidak dapat mengerjakan lagi. Jika menurutmu ini keliru, hubungi panitia.',
-  DATA_TIDAK_COCOK: 'NIM ini sedang/sudah terdaftar mengerjakan tes dengan nomor HP yang berbeda. Isi nomor HP yang sama seperti saat mulai, atau hubungi panitia.',
-  KODE: 'Kode akses salah atau belum diisi.',
-  DATA: 'Ada isian yang belum sesuai. Periksa kembali biodata.',
+  DATA_TIDAK_COCOK: 'Data tes untuk peserta ini tidak cocok dengan catatan server. Hubungi panitia.',
+  MASUK: 'Nomor Peserta atau tanggal lahir tidak sesuai. Periksa kembali, atau lihat nomormu di halaman Cek Status Pelamar.',
+  TERLALU_SERING: 'Terlalu banyak percobaan gagal. Coba lagi 30 menit lagi atau hubungi panitia.',
+  BELUM_SIAP: 'Data peserta belum dipasang oleh panitia. Hubungi panitia.',
+  DATA: 'Data peserta tidak lengkap di catatan panitia. Hubungi panitia.',
   SIBUK: 'Server sedang sibuk. Tunggu beberapa detik lalu coba lagi.',
   SERVER: 'Terjadi gangguan di server. Coba lagi beberapa saat.'
 };
 async function doStart(d){
   if (FS_OK) enterFS();                       // harus dipanggil langsung dari klik pengguna
+  if (LAPTOP_ONLY && isMobile()){ overlayOff(); exitFS(); formError('Tes ini harus dikerjakan dengan laptop/PC, bukan HP atau tablet.'); return; }
+  const cam = await camGate();                // kamera + kalibrasi SEBELUM timer server dimulai
+  if (cam === 'fail'){ exitFS(); return; }
   overlay('Menyiapkan tes…', 'Mohon tunggu, jangan tutup halaman.', true);
   try {
-    const r = await api({ action: 'start', nim: d.nim, nama: d.nama, ttl: ttlText(d), univ: d.univ, fak: d.fak, jur: d.jur, hp: d.hp, kode: d.kode, ua: navigator.userAgent.slice(0, 160) }, 25000);
+    const r = await api({ action: 'start', nomor: d.nomor, lahir: d.tgl, nim: d.nim, nama: d.nama, ttl: ttlText(d), univ: d.univ, fak: d.fak, jur: d.jur, hp: d.hp, ua: navigator.userAgent.slice(0, 160) }, 25000);
     if (!r.ok){
-      overlayOff(); exitFS();
-      if (r.err === 'KODE'){ $('kodeWrap').hidden = false; $('f_kode').focus(); }
+      GZ.stop(); overlayOff(); exitFS();
       formError(ERR_MSG[r.err] || r.msg || 'Gagal memulai tes.'); return;
     }
     S = { nim: r.nim, nama: r.nama || d.nama, token: r.token, seed: r.seed, deadline: r.deadline, off: clk.server - Date.now(), answers: {}, queue: [], tab: 0, hid: 0, done: false, rej: 0 };
-    S.qs = {}; S.fs = 0;
+    S.qs = {}; S.fs = 0; S.cam = (cam === 'ok') ? 1 : 0;
     (r.answered || []).forEach(a => { S.answers[a.q] = { o: a.o, n: a.n || 0, sent: true }; S.qFloor = Math.max(S.qFloor || 0, a.t || 0); });
     save(); overlayOff(); beginTest(!!(r.answered && r.answered.length));
   } catch(e){
-    overlayOff(); exitFS(); formError('Tidak bisa terhubung ke server. Periksa koneksi internetmu lalu coba lagi.');
+    GZ.stop(); overlayOff(); exitFS(); formError('Tidak bisa terhubung ke server. Periksa koneksi internetmu lalu coba lagi.');
   }
 }
 
@@ -529,7 +559,11 @@ function beginTest(resumed){
   show('test'); history.pushState(null, '', location.href);
   window.addEventListener('beforeunload', onBeforeUnload);
   S.qs = S.qs || {};
-  startTimer(); renderQ(); fsGate();
+  startTimer(); renderQ();
+  camPending = !!(resumed || !GZ.ready());
+  if (!camPending) GZ.begin();
+  fsGate();
+  if (camPending && !gateOpen) camResume();
   if (resumed) banner('Tes dilanjutkan dari soal ' + (idx + 1) + '. Timer tetap berjalan sejak kamu mulai.', 'ok', 6000);
   if (S.queue.length) flush();
 }
@@ -695,6 +729,7 @@ async function drainThenFinish(reason){
     try {
       clearTimeout(retryT);
       while (S.queue.length){ sendBusy = true; try { await sendOnce(); } finally { sendBusy = false; } }
+      await Promise.race([GZ.finalize(), sleep(7000)]);
       const r = await api({ action: 'finish', nim: S.nim, token: S.token, reason, tab: S.tab, hid: S.hid || 0, fs: S.fs || 0 }, 25000);
       if (r.ok){ S.done = true; S.receipt = r.receipt; S.count = r.count; S.status = r.status; S.reason = reason; S.finishedAt = Math.round(nowSrv()); save(); showDone(); return; }
       if (r.err === 'BELUM_HABIS'){ finishing = false; expired = false; locked = false; overlayOff(); renderQ(); return; }
@@ -711,7 +746,7 @@ async function drainThenFinish(reason){
   }
 }
 function showDone(){
-  clearInterval(timerH); window.removeEventListener('beforeunload', onBeforeUnload); gateOpen = false; overlayOff(); $('banner').hidden = true; exitFS();
+  GZ.shutdown(); clearInterval(timerH); window.removeEventListener('beforeunload', onBeforeUnload); gateOpen = false; overlayOff(); $('banner').hidden = true; exitFS();
   const answered = Object.keys(S.answers).length;
   const cnt = typeof S.count === 'number' ? S.count : answered;
   $('doneTitle').textContent = S.reason === 'waktu_habis' ? 'Waktu pengerjaan habis' : 'Terima kasih, ' + (S.nama || '').split(' ')[0] + '!';
@@ -736,6 +771,488 @@ $('resetDevice').addEventListener('click', () => {
   if (!$('s-test').hidden && !(e.target && /^(input|textarea|select)$/i.test(e.target.tagName))) e.preventDefault();
 }));
 
+/*GZCORE-START*/
+const GZCORE = (() => {
+  // Ambang dan parameter. Semua sudut dalam derajat, dihitung RELATIF terhadap baseline (hasil kalibrasi).
+  const C = {
+    minEp: 2.5,      // detik: pengalihan perhatian < ini dianggap lirikan wajar, tidak dihitung
+    gap: 0.8,        // detik: jeda "normal" sependek ini tidak memutus satu episode
+    flagMin: 2.0,    // idem, untuk HP dan lebih dari satu wajah
+    flagGap: 1.5,
+    resume: 1.5,     // detik: jika tidak ada sampel selama ini (tab tersembunyi dll.), episode terbuka ditutup
+    yaw: 25,         // toleh kiri/kanan
+    pitchDn: 14,     // kepala menunduk
+    pitchUp: 20,     // kepala mendongak (mata ke atas diabaikan: orang melihat ke atas saat berpikir)
+    gx: 0.40,        // mata ke samping (blendshape, 0..1)
+    gd: 0.45,        // mata ke bawah (blendshape, 0..1)
+    blink: 0.70,     // mata menutup (rata-rata dua mata)
+    minFace: 0.07,   // lebar wajah minimal (proporsi lebar frame)
+    multiRatio: 0.35,// wajah kedua dihitung bila luasnya >= 35% wajah utama
+    phone: 0.40      // skor minimal deteksi "cell phone"
+  };
+  const R2D = 180 / Math.PI;
+  const med = a => { if (!a.length) return 0; const s = a.slice().sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+  const sd = a => { if (!a.length) return 0; const m = a.reduce((s, v) => s + v, 0) / a.length; return Math.sqrt(a.reduce((s, v) => s + (v - m) * (v - m), 0) / a.length); };
+
+  function bbox(lm){
+    let x0 = 1, x1 = 0, y0 = 1, y1 = 0;
+    for (const p of lm){ if (p.x < x0) x0 = p.x; if (p.x > x1) x1 = p.x; if (p.y < y0) y0 = p.y; if (p.y > y1) y1 = p.y; }
+    return { w: x1 - x0, h: y1 - y0, area: (x1 - x0) * (y1 - y0) };
+  }
+  // Wajah yang berarti: cukup besar; wajah kedua hanya dihitung bila ukurannya sebanding dengan wajah utama.
+  function pickFaces(lms){
+    const L = (lms || []).map((lm, i) => Object.assign({ i }, bbox(lm))).filter(f => f.w >= C.minFace);
+    L.sort((a, b) => b.area - a.area);
+    return L.filter((f, k) => k === 0 || f.area >= C.multiRatio * L[0].area);
+  }
+  // Fitur dari 478 landmark + blendshape. Pitch: + = menunduk (dahi mendekat ke kamera, dagu menjauh).
+  function features(lm, cats, W, H){
+    const a = lm[234], b = lm[454], f = lm[10], c = lm[152];
+    const yaw = Math.atan2((b.z - a.z) * W, (b.x - a.x) * W) * R2D;
+    const pitch = Math.atan2((c.z - f.z) * W, (c.y - f.y) * H) * R2D;
+    const g = {}; (cats || []).forEach(k => { g[k.categoryName] = k.score; });
+    const v = k => g[k] || 0;
+    return {
+      yaw, pitch,
+      gx: (v('eyeLookInLeft') + v('eyeLookOutRight') - v('eyeLookOutLeft') - v('eyeLookInRight')) / 2,
+      gd: (v('eyeLookDownLeft') + v('eyeLookDownRight')) / 2,
+      bl: (v('eyeBlinkLeft') + v('eyeBlinkRight')) / 2
+    };
+  }
+  // 'on' | 'away' | 'down'  (relatif terhadap baseline; b.sign/tDn/tGd hasil kalibrasi dua titik)
+  function classify(f, b){
+    const sg = b.sign || 1, tDn = b.tDn || C.pitchDn, tGd = b.tGd || C.gd;
+    const dyaw = Math.abs(f.yaw - b.yaw), dp = sg * (f.pitch - b.pitch), dgx = Math.abs(f.gx - b.gx), dgd = f.gd - b.gd;
+    const a = dyaw / C.yaw, e = dgx / C.gx;
+    const side = Math.max(a, e, 0.8 * (a + e), -dp / C.pitchUp);          // kepala dan mata sama-sama ke samping saling menguatkan
+    const p = Math.max(dp, 0) / tDn, g = Math.max(dgd, 0) / tGd;
+    const down = Math.max(p, g, 0.8 * (p + g));                            // kepala dan mata sama-sama ke bawah saling menguatkan
+    if (f.bl >= C.blink) return 'away';
+    if (down >= 1 && down >= side) return 'down';
+    if (side >= 1) return 'away';
+    if (down >= 1) return 'down';
+    return 'on';
+  }
+  // Kalibrasi dua titik: tengah layar (baseline) lalu bagian bawah layar (tempat pilihan jawaban).
+  // Dari situ diturunkan (1) arah "menunduk" yang benar (self-correcting) dan (2) seberapa jauh menunduk masih wajar untuk orang ini.
+  function deriveCal(base, bot){
+    const raw = bot.pitch - base.pitch, dgd = Math.max(0, bot.gd - base.gd);
+    const sign = raw < -2 ? -1 : 1;
+    const dpBot = Math.max(0, sign * raw);
+    return { sign, tDn: Math.min(22, Math.max(C.pitchDn, 1.6 * dpBot + 4)), tGd: Math.min(0.65, Math.max(C.gd, 1.5 * dgd + 0.1)) };
+  }
+  function median(feats){
+    return { yaw: med(feats.map(f => f.yaw)), pitch: med(feats.map(f => f.pitch)), gx: med(feats.map(f => f.gx)), gd: med(feats.map(f => f.gd)) };
+  }
+  function unstable(feats){ return sd(feats.map(f => f.yaw)) > 10 || sd(feats.map(f => f.pitch)) > 10; }
+
+  // Satu episode = rangkaian sampel "tidak normal" yang bersambung (jeda normal < gap tidak memutus).
+  class Tracker {
+    constructor(minEp, gap, onEvent){ this.minEp = minEp; this.gap = gap; this.on = onEvent || null; this.cur = null; this.acc = { n: 0, dur: 0, max: 0 }; }
+    feed(t, kind, dt, q){
+      if (this.cur && t - this.cur.last > C.resume) this.close(0.25);
+      if (kind){
+        if (!this.cur) this.cur = { t0: t, last: t, k: {}, q: q | 0, dt: dt, off: null };
+        const c = this.cur; c.last = t; c.dt = dt; c.off = null; c.k[kind] = (c.k[kind] || 0) + 1;
+      } else if (this.cur){
+        const c = this.cur; if (c.off === null) c.off = t;
+        if (t - c.off >= this.gap) this.close(c.dt);
+      }
+    }
+    close(dt){
+      const c = this.cur; this.cur = null; if (!c) return null;
+      const dur = c.last - c.t0 + (dt === undefined ? c.dt : dt);
+      if (dur < this.minEp) return null;
+      let tot = 0, best = 'away', n = 0;
+      for (const k in c.k){ tot += c.k[k]; if (c.k[k] > n){ n = c.k[k]; best = k; } }
+      if ((c.k.down || 0) / tot >= 0.3) best = 'down'; else if ((c.k.noface || 0) / tot >= 0.5) best = 'noface';
+      const e = { t0: c.t0, dur: Math.round(dur * 10) / 10, type: best, q: c.q };
+      this.acc.n++; this.acc.dur += dur; this.acc.max = Math.max(this.acc.max, dur); this.acc[best] = (this.acc[best] || 0) + 1;
+      if (this.on) this.on(e);
+      return e;
+    }
+    open(t){ return this.cur ? t - this.cur.t0 : 0; }
+    dump(){ return { acc: this.acc }; }
+    load(d){ if (d && d.acc) this.acc = d.acc; }
+  }
+
+  // Skor pengalihan 0..100 (0 = selalu menatap layar). Transparan: 60 poin dari % waktu, 25 dari frekuensi, maks 15 dari penanda khusus.
+  function score(s){
+    const obs = Math.max(s.obs || 0, 300);
+    const pct = (s.away || 0) / obs, epm = (s.eps || 0) / (obs / 60);
+    const base = Math.min(1, pct / 0.25) * 60, freq = Math.min(1, epm / 1.5) * 25;
+    const flags = Math.min(15, 3 * (s.down || 0) + 2 * (s.noface || 0) + 6 * (s.phone || 0) + 4 * (s.multi || 0));
+    return Math.round(Math.min(100, base + freq + flags));
+  }
+  return { C, med, sd, bbox, pickFaces, features, classify, deriveCal, median, unstable, Tracker, score };
+})();
+/*GZCORE-END*/
+
+/* ============ PEMANTAUAN PERHATIAN (kamera; diproses LOKAL di perangkat peserta) ============ */
+/*GZRUN-START*/
+const GZ = (() => {
+  const LIBVER = '1.2.2';
+  const rel = p => new URL(p, location.href).href;
+  const CDN = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@' + LIBVER;
+  const FL_URLS = [rel('gaze/face_landmarker.task'), 'https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task'];
+  const OD_URLS = [rel('gaze/efficientdet_lite0.tflite'), 'https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/float32/1/efficientdet_lite0.tflite'];
+  const REPORT_MS = (DEMO && Number(qs.get('gzint'))) ? Number(qs.get('gzint')) * 1000 : 60000;
+  const HEARTBEAT_MS = 180000;
+  const LBL = { init: 'Menyiapkan…', on: 'Terpantau baik', away: 'Pandangan beralih', down: 'Menunduk', noface: 'Wajah tidak terlihat', camlost: 'Kamera terputus', off: 'Kamera tidak aktif' };
+
+  let lib = null, FL = null, OD = null, odOK = false, loadP = null;
+  let stream = null, vid = null, running = false, tmr = null, repT = null, saveT = null, rptT = null;
+  let base = null, trM = null, trP = null, trX = null;
+  let obs = 0, lastT = 0, ema = 40, tickN = 0, camLost = 0, lastTs = 0, lastTs2 = 0, phoneNow = false, nFaces = 0, lastFeat = null, state = 'init';
+  let evq = [], eid = 0, sentId = 0, lastKey = '', lastSendAt = 0, mode = 'test', offFlag = false;
+  const hooks = [];
+
+  const tNow = () => performance.now() / 1000;
+  const qNo = () => (mode === 'test' && typeof idx === 'number') ? idx + 1 : 0;
+  const sleepMs = ms => new Promise(r => setTimeout(r, ms));
+
+  function mk(){
+    const push = tr => e => { e.id = ++eid; e.ts = Math.round(nowSrv() - (tNow() - e.t0) * 1000); e.tr = tr; evq.push(e); if (evq.length > 300) evq.shift(); };
+    trM = new GZCORE.Tracker(GZCORE.C.minEp, GZCORE.C.gap, push('m'));
+    trP = new GZCORE.Tracker(GZCORE.C.flagMin, GZCORE.C.flagGap, push('p'));
+    trX = new GZCORE.Tracker(GZCORE.C.flagMin, GZCORE.C.gap + 0.4, push('x'));
+  }
+
+  /* ---------- pemuatan pustaka dan model ---------- */
+  async function loadLib(){
+    const tries = [[rel('gaze/vision_bundle.mjs'), rel('gaze/wasm')], [CDN + '/vision_bundle.mjs', CDN + '/wasm']];
+    let err;
+    for (const [js, wasm] of tries){
+      try { const m = await import(js); const fs = await m.FilesetResolver.forVisionTasks(wasm); return { m, fs }; } catch(e){ err = e; }
+    }
+    throw Object.assign(new Error('LIB'), { code: 'LIB', cause: err });
+  }
+  async function mkModel(cls, opts, urls){
+    let err;
+    for (const u of urls){
+      try { return await cls.createFromOptions(lib.fs, Object.assign({}, opts, { baseOptions: { modelAssetPath: u, delegate: 'CPU' } })); } catch(e){ err = e; }
+    }
+    throw err;
+  }
+  function load(){
+    if (loadP) return loadP;
+    loadP = (async () => {
+      try { lib = await loadLib(); } catch(e){ throw Object.assign(new Error('LIB'), { code: 'LIB' }); }
+      try { FL = await mkModel(lib.m.FaceLandmarker, { runningMode: 'VIDEO', numFaces: 3, outputFaceBlendshapes: true }, FL_URLS); }
+      catch(e){ throw Object.assign(new Error('MODEL'), { code: 'MODEL' }); }
+      try { OD = await mkModel(lib.m.ObjectDetector, { runningMode: 'VIDEO', scoreThreshold: 0.35, maxResults: 5, categoryAllowlist: ['cell phone'] }, OD_URLS); odOK = true; }
+      catch(e){ OD = null; odOK = false; }
+    })();
+    loadP.catch(() => { loadP = null; });
+    return loadP;
+  }
+
+  /* ---------- kamera ---------- */
+  function closeCam(){
+    try { if (stream) stream.getTracks().forEach(t => { t.removeEventListener('ended', onEnded); t.stop(); }); } catch(e){}
+    stream = null; if (vid) { try { vid.srcObject = null; } catch(e){} }
+  }
+  async function openCam(){
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw Object.assign(new Error('NOAPI'), { code: 'NOAPI' });
+    closeCam();
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 640 }, height: { ideal: 480 }, frameRate: { ideal: 15, max: 30 }, facingMode: 'user' }, audio: false });
+    } catch(e){
+      const n = e && e.name;
+      throw Object.assign(new Error(n || 'CAM'), { code: (n === 'NotAllowedError' || n === 'SecurityError') ? 'DENIED' : (n === 'NotFoundError' || n === 'OverconstrainedError') ? 'NOCAM' : (n === 'NotReadableError' || n === 'AbortError') ? 'BUSY' : 'CAM' });
+    }
+    vid = $('gzVid'); vid.srcObject = stream;
+    try { await vid.play(); } catch(e){}
+    await new Promise(res => {
+      if (vid.readyState >= 2 && vid.videoWidth) return res();
+      const to = setTimeout(res, 5000);
+      vid.addEventListener('loadeddata', () => { clearTimeout(to); res(); }, { once: true });
+    });
+    stream.getVideoTracks().forEach(t => t.addEventListener('ended', onEnded));
+    return true;
+  }
+  function onEnded(){
+    if (!running && mode !== 'cek') return;
+    camLost++; setState('camlost'); reacquire();
+  }
+  function reacquire(){
+    clearTimeout(repT);
+    repT = setTimeout(async () => {
+      if (!running && mode !== 'cek') return;
+      try { await openCam(); setState('on'); } catch(e){ reacquire(); }
+    }, 4000);
+  }
+
+  /* ---------- deteksi satu frame ---------- */
+  function detect(){
+    if (!FL || !vid || vid.readyState < 2 || !vid.videoWidth) return null;
+    const ts = Math.max(lastTs + 1, performance.now()); lastTs = ts;
+    const r = FL.detectForVideo(vid, ts);
+    const faces = GZCORE.pickFaces(r.faceLandmarks);
+    let f = null;
+    if (faces.length){
+      const i = faces[0].i, bsh = r.faceBlendshapes && r.faceBlendshapes[i];
+      f = GZCORE.features(r.faceLandmarks[i], (bsh && bsh.categories) || [], vid.videoWidth, vid.videoHeight);
+    }
+    return { faces, f };
+  }
+  function detPhone(){
+    if (!OD || !vid || vid.readyState < 2 || !vid.videoWidth) return false;
+    const ts = Math.max(lastTs2 + 1, performance.now()); lastTs2 = ts;
+    const r = OD.detectForVideo(vid, ts);
+    return (r.detections || []).some(d => d.categories.some(c => /phone/i.test(c.categoryName) && c.score >= GZCORE.C.phone));
+  }
+
+  /* ---------- kalibrasi dua titik ---------- */
+  async function collect(secs, onP){
+    const feats = [], t0 = tNow();
+    while (tNow() - t0 < secs){
+      if (onP) onP(Math.min(1, (tNow() - t0) / secs));
+      let r = null; try { r = detect(); } catch(e){}
+      if (r && r.faces.length === 1 && r.f) feats.push(r.f);
+      await sleepMs(250);
+    }
+    if (onP) onP(1);
+    return feats;
+  }
+  async function calibrate(onProg, onPhase, secs){
+    const s1 = Math.max(4, Math.round(secs * 0.62)), s2 = Math.max(3, secs - s1), w1 = s1 / (s1 + s2);
+    if (onPhase) onPhase(1);
+    const f1 = await collect(s1, p => onProg && onProg(p * w1));
+    if (f1.length < 10) return null;
+    if (GZCORE.unstable(f1)) return { unstable: true };
+    const b0 = GZCORE.median(f1);
+    if (onPhase) onPhase(2);
+    const f2 = await collect(s2, p => onProg && onProg(w1 + p * (1 - w1)));
+    base = f2.length >= 6 ? Object.assign(b0, GZCORE.deriveCal(b0, GZCORE.median(f2))) : b0;
+    return { base };
+  }
+  async function calibrateUI(secs){
+    const ov = $('camOv'), row = $('camRow'), bar = $('camBar');
+    $('camPrev').srcObject = stream; try { $('camPrev').play(); } catch(e){}
+    ov.hidden = false;
+    for (;;){
+      row.hidden = true; bar.parentNode.hidden = false; bar.style.width = '0%';
+      const r = await calibrate(p => { bar.style.width = Math.round(p * 100) + '%'; }, ph => {
+        $('camT').textContent = 'Kalibrasi kamera (' + ph + '/2)';
+        $('camP').textContent = ph === 1
+          ? 'Duduklah seperti saat mengerjakan tes dan tatap tengah layar. Pastikan wajahmu terlihat jelas dan cahaya cukup.'
+          : 'Sekarang lihat ke bagian bawah layar, seperti saat membaca pilihan jawaban A–F, lalu tetap di posisi itu.';
+      }, secs || 8);
+      if (r && r.base){ ov.hidden = true; return true; }
+      $('camT').textContent = 'Kalibrasi belum berhasil';
+      $('camP').textContent = r ? 'Kepalamu terlalu banyak bergerak. Tatap tengah layar dan diam sejenak, lalu coba lagi.'
+        : 'Wajahmu belum terdeteksi dengan jelas. Dekatkan wajah ke kamera, tambah cahaya dari depan, dan pastikan mata, hidung, dan mulut terlihat (lepas topi atau masker).';
+      bar.parentNode.hidden = true;
+      const again = await new Promise(res => {
+        row.innerHTML = ''; row.hidden = false;
+        [['Batal', 'ghost', false], ['Coba lagi', 'primary', true]].forEach(([l, c, v]) => { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ' + c; b.textContent = l; b.onclick = () => res(v); row.appendChild(b); });
+      });
+      if (!again){ ov.hidden = true; return false; }
+    }
+  }
+
+  /* ---------- UI ringkas ---------- */
+  function setState(s){
+    state = s;
+    const chip = $('camChip'); chip.className = 'camchip ' + s;
+    $('camLab').textContent = LBL[s] || '';
+  }
+  function emit(){ const info = live(); hooks.forEach(h => { try { h(info); } catch(e){} }); }
+  function live(){
+    const f = lastFeat;
+    return { state, nFaces, phone: phoneNow, ms: Math.round(ema), od: odOK, sum: summary(), open: trM ? trM.open(tNow()) : 0,
+      d: (f && base) ? { yaw: Math.abs(f.yaw - base.yaw), pitch: f.pitch - base.pitch, gx: f.gx - base.gx, gd: f.gd - base.gd, bl: f.bl } : null, base };
+  }
+
+  /* ---------- loop ---------- */
+  async function tick(){
+    if (!running) return;
+    const p0 = performance.now(), now = tNow();
+    try {
+      if (document.hidden){ lastT = now; }
+      else {
+        const dt = Math.min(1, Math.max(0.05, now - (lastT || now))); lastT = now;
+        let kind = null, multi = false, sampled = false;
+        if (!stream || !stream.active || !vid || vid.readyState < 2){ kind = 'noface'; sampled = true; setState('camlost'); lastFeat = null; nFaces = 0; }
+        else {
+          const r = detect();
+          if (r){
+            sampled = true; nFaces = r.faces.length; lastFeat = r.f;
+            if (!r.faces.length) kind = 'noface';
+            else { const c = GZCORE.classify(r.f, base); kind = c === 'on' ? null : c; multi = r.faces.length > 1; }
+            setState(kind || 'on');
+          }
+        }
+        if (sampled){
+          obs += dt;
+          trM.feed(now, kind, dt, qNo());
+          trX.feed(now, multi ? 'multi' : null, dt, qNo());
+          if (OD && stream && stream.active && (++tickN % 4 === 0)){
+            let ph = false; try { ph = detPhone(); } catch(e){}
+            phoneNow = ph; trP.feed(now, ph ? 'phone' : null, 1, qNo());
+          }
+        }
+      }
+    } catch(e){ /* satu frame gagal tidak menghentikan pemantauan */ }
+    const used = performance.now() - p0; ema = ema * 0.9 + used * 0.1;
+    emit();
+    if (running) tmr = setTimeout(tick, Math.max(40, (ema > 140 ? 500 : 250) - used));
+  }
+
+  /* ---------- pelaporan ke server ---------- */
+  function summary(){
+    const a = trM ? trM.acc : { n: 0, dur: 0, max: 0 };
+    return { obs: Math.round(obs), away: Math.round(a.dur), eps: a.n, down: a.down | 0, noface: a.noface | 0, maxEp: Math.round(a.max),
+      multi: trX ? trX.acc.n : 0, phone: trP ? trP.acc.n : 0, cam: camLost, od: odOK ? 1 : 0, ms: Math.round(ema) };
+  }
+  function payload(final){
+    const s = summary(); s.skor = GZCORE.score(s); s.fin = final ? 1 : 0; s.v = 1;
+    if (offFlag) s.off = 1;
+    s.ev = evq.filter(e => e.id > sentId).slice(0, 40).map(e => [e.id, e.ts, e.dur, e.type, e.q]);
+    return s;
+  }
+  async function report(final){
+    if (mode !== 'test' || !S || S.done && !final) return true;
+    const p = payload(final);
+    const key = JSON.stringify([p.away, p.eps, p.down, p.noface, p.multi, p.phone, p.cam, p.off | 0, p.ev.length]);
+    if (!final && !p.ev.length && key === lastKey && Date.now() - lastSendAt < HEARTBEAT_MS) return true;
+    const maxId = p.ev.length ? p.ev[p.ev.length - 1][0] : sentId;
+    try {
+      const r = await api({ action: 'gaze', nim: S.nim, token: S.token, g: p }, 12000);
+      if (r && r.ok){ sentId = Math.max(sentId, maxId); evq = evq.filter(e => e.id > sentId); lastKey = key; lastSendAt = Date.now(); return true; }
+    } catch(e){}
+    return false;
+  }
+  function dump(){ return { obs, eid, sentId, camLost, evq: evq.slice(-80), m: trM && trM.dump(), p: trP && trP.dump(), x: trX && trX.dump(), base }; }
+  function restore(d){
+    if (!d) return;
+    obs = d.obs || 0; eid = d.eid || 0; sentId = d.sentId || 0; camLost = d.camLost || 0; evq = d.evq || [];
+    if (d.m) trM.load(d.m); if (d.p) trP.load(d.p); if (d.x) trX.load(d.x);
+  }
+  function persist(){ if (mode === 'test' && S && !S.done){ S.gz = dump(); save(); } }
+  function closeOpen(){ const now = tNow(); [trM, trP, trX].forEach(t => { if (t) t.close(); }); return now; }
+
+  /* ---------- API publik ---------- */
+  function startLoop(){
+    running = true; lastT = tNow(); setState('on'); $('camChip').classList.remove('hide');
+    clearTimeout(tmr); tmr = setTimeout(tick, 250);
+    clearInterval(saveT); saveT = setInterval(persist, 15000);
+    clearTimeout(rptT);
+    const sched = () => { rptT = setTimeout(async () => { await report(false); if (running) sched(); }, REPORT_MS + Math.round(Math.random() * 8000)); };
+    sched();
+  }
+  return {
+    ready: () => !!stream && !!base,
+    async prepare(){ await load(); await openCam(); },
+    calibrateUI,
+    stop(){ running = false; clearTimeout(tmr); clearTimeout(repT); clearInterval(saveT); clearTimeout(rptT); closeCam(); $('camChip').classList.add('hide'); },
+    shutdown(){ this.stop(); mode = 'test'; },
+    begin(){
+      mode = 'test'; offFlag = false; mk(); if (S && S.gz) restore(S.gz);
+      if (S) { S.cam = 1; save(); }
+      startLoop();
+    },
+    beginOff(){   // kamera tidak wajib dan tidak aktif: tercatat saja
+      mode = 'test'; offFlag = true; mk(); if (S && S.gz) restore(S.gz);
+      setState('off'); $('camChip').classList.add('hide');
+      report(false); clearTimeout(rptT); rptT = setTimeout(() => report(false), 5000);
+    },
+    async finalize(){
+      if (!trM) return true;
+      running = false; clearTimeout(tmr); clearTimeout(rptT); clearInterval(saveT); closeOpen(); persist();
+      return report(true);
+    },
+    /* mode cek kamera (tanpa server) */
+    async startCek(){
+      mode = 'cek'; offFlag = false; mk(); obs = 0; evq = []; eid = 0; sentId = 0; camLost = 0; phoneNow = false; tickN = 0;
+      startLoop(); clearTimeout(rptT); clearInterval(saveT);
+    },
+    onTick(fn){ hooks.push(fn); },
+    live,
+    isRunning: () => running,
+    opts: () => ({ od: odOK })
+  };
+})();
+/*GZRUN-END*/
+
+const CAM_MSG = {
+  DENIED: 'Izin kamera ditolak. Klik ikon kunci/kamera di bilah alamat browser, ubah Kamera menjadi Izinkan, lalu coba lagi.',
+  NOCAM: 'Kamera tidak ditemukan di perangkat ini. Gunakan laptop yang memiliki kamera.',
+  BUSY: 'Kamera sedang dipakai aplikasi lain dan tidak bisa dibagi. Tutup aplikasi yang memakai kamera (kecuali Zoom), lalu coba lagi. Jika kamera tetap tidak bisa dipakai bersama Zoom, hubungi panitia.',
+  NOAPI: 'Browser ini tidak mendukung akses kamera. Gunakan Chrome atau Edge versi terbaru di laptop.',
+  LIB: 'Komponen pemantauan gagal dimuat. Periksa koneksi internet lalu coba lagi.',
+  MODEL: 'Model pemantauan gagal dimuat. Periksa koneksi internet lalu coba lagi.',
+  CAL: 'Kalibrasi kamera belum berhasil. Pastikan wajah terlihat jelas dengan cahaya cukup, lalu coba lagi.',
+  CAM: 'Kamera tidak bisa diaktifkan. Periksa izin kamera di browser lalu coba lagi.'
+};
+const isMobile = () => {
+  const ua = navigator.userAgent || '';
+  if (navigator.userAgentData && navigator.userAgentData.mobile) return true;
+  if (/Android|iPhone|iPad|iPod|Mobile|Tablet/i.test(ua)) return true;
+  return /Macintosh/i.test(ua) && navigator.maxTouchPoints > 1;
+};
+let camPending = false, camGateOpen = false;
+async function camGate(){
+  overlay('Menyiapkan kamera…', 'Saat browser meminta izin, pilih Izinkan. Kamera wajib aktif selama tes.', true);
+  let err = null;
+  try { await GZ.prepare(); } catch(e){ err = e; }
+  overlayOff();
+  if (!err){
+    const ok = await GZ.calibrateUI(8);
+    if (ok) return 'ok';
+    err = { code: 'CAL' };
+  }
+  GZ.stop();
+  if (!CAM_REQUIRED){ banner('Kamera tidak aktif; tes tetap dilanjutkan dan hal ini dicatat panitia.', 'err', 8000); return 'skip'; }
+  formError(CAM_MSG[err.code] || CAM_MSG.CAM);
+  return 'fail';
+}
+function camResume(){
+  camPending = false;
+  if (S && S.cam === 0){ GZ.beginOff(); return; }
+  camGateOpen = true;
+  const ask = msg => overlay('Aktifkan kamera untuk melanjutkan', msg || 'Kamera wajib aktif selama tes. Timer tetap berjalan selama layar ini tampil.', false,
+    [{ label: 'Aktifkan kamera', cls: 'primary', fn: go }].concat(CAM_REQUIRED ? [] : [
+      { label: 'Lanjut tanpa kamera', cls: 'ghost', fn: () => { camGateOpen = false; S.cam = 0; save(); overlayOff(); GZ.beginOff(); fsGate(); } }
+    ]));
+  const go = async () => {
+    overlay('Mengaktifkan kamera…', '', true);
+    try { await GZ.prepare(); } catch(e){ ask(CAM_MSG[e.code] || CAM_MSG.CAM); return; }
+    overlayOff();
+    const ok = await GZ.calibrateUI(6);
+    if (!ok){ GZ.stop(); ask(CAM_MSG.CAL); return; }
+    camGateOpen = false; GZ.begin(); fsGate();
+  };
+  ask();
+}
+
+/* ---------- cek kamera (?cek=1) ---------- */
+(() => {
+  const set = (id, v) => { const e = $(id); if (e) e.textContent = v; };
+  const f1 = v => (v >= 0 ? '+' : '') + v.toFixed(1);
+  GZ.onTick(i => {
+    if ($('s-cek').hidden) return;
+    const st = $('ck_st'); st.textContent = ({ on: 'Terpantau baik', away: 'Pandangan beralih', down: 'Menunduk', noface: 'Wajah tidak terlihat', camlost: 'Kamera terputus', init: '–' })[i.state] || '–'; st.className = 'cekst ' + i.state;
+    set('ck_n', String(i.nFaces));
+    set('ck_yaw', i.d ? i.d.yaw.toFixed(1) : '–');
+    set('ck_pit', i.d ? f1(i.d.pitch) + (i.d.pitch > 0 ? ' (menunduk)' : '') : '–');
+    set('ck_eye', i.d ? f1(i.d.gx) + ' / ' + f1(i.d.gd) : '–');
+    set('ck_ph', i.od ? (i.phone ? 'YA' : 'tidak') : 'model HP tidak termuat');
+    const s = i.sum; set('ck_ep', s.eps - s.down - s.noface + ' / ' + s.down + ' / ' + s.noface + ' / ' + s.phone + (i.open >= 2.5 ? '  (sedang berlangsung: ' + i.open.toFixed(1) + ' dtk, dihitung setelah kembali menatap layar)' : ''));
+    set('ck_sc', String(GZCORE.score(s)) + ' (waktu uji singkat, hanya gambaran)');
+    set('ck_ms', i.ms + ' ms');
+  });
+  $('cekGo').addEventListener('click', async () => {
+    const b = $('cekGo'); b.disabled = true; b.textContent = 'Menyiapkan…';
+    try { await GZ.prepare(); } catch(e){ b.disabled = false; b.textContent = 'Mulai cek kamera'; banner(CAM_MSG[e.code] || CAM_MSG.CAM, 'err', 9000); return; }
+    const ok = await GZ.calibrateUI(8);
+    b.disabled = false; b.textContent = 'Ulangi cek kamera';
+    if (!ok){ GZ.stop(); return; }
+    $('cekPanel').hidden = false; await GZ.startCek();
+  });
+})();
+
 /* ---------- start ---------- */
 async function resume(){
   overlay('Memulihkan sesi tes…', 'Mohon tunggu sebentar.', true);
@@ -758,13 +1275,14 @@ async function resume(){
   }
 }
 async function init(){
+  if (qs.get('cek') === '1'){ show('cek'); return; }
   if (!SCRIPT_URL && !DEMO){ show('setup'); return; }
   if (DEMO){ $('top').insertAdjacentHTML('afterend', '<div class="ribbon">MODE DEMO – jawaban TIDAK disimpan ke spreadsheet</div>'); document.title = '[DEMO] ' + document.title; }
   S = load();
   if (S && S.nim && S.token){ if (S.done){ showDone(); return; } resume(); return; }
   S = null; show('intro');
   api({ action: 'ping' }, 10000).then(r => {
-    if (!r) return; if (r.requireCode) $('kodeWrap').hidden = false;
+    if (!r) return; /* kode akses tidak dipakai lagi: masuk lewat Nomor Peserta */
     if (r.openText) banner('Jadwal: tes dapat dimulai mulai ' + r.openText + (r.untilText ? ' sampai ' + r.untilText : '') + '.', 'ok');
   }).catch(() => {});
 }
