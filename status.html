@@ -503,7 +503,7 @@ function showHasil(r){
   $('hsNama').textContent = r.d.nama + ' · ' + (r.nomor || r.d.nim);
   if (r.hasil === 'LULUS'){
     $('hsBig').textContent = 'LULUS';
-    $('hsTxt').innerHTML = 'Selamat! Kamu <b>lulus Tes Pengetahuan Umum</b> dan berhak melanjutkan ke tahap <b>Tes Wawancara</b>, yang dilaksanakan secara <b>offline di kampus</b>. Tunggu informasi jadwal dan tempat wawancara dari panitia.';
+    $('hsTxt').innerHTML = 'Selamat! Kamu <b>lulus Tes Pengetahuan Umum</b> dan berhak melanjutkan ke tahap <b>Tes Wawancara</b>. Wawancara dilaksanakan secara <b>offline di universitasmu masing-masing</b>, jadi mulai bersiap. Tanggal dan tempatnya akan diinformasikan kemudian di grup WhatsApp peserta.';
   } else if (r.hasil === 'TIDAK'){
     $('hsBig').textContent = 'TIDAK LULUS';
     $('hsTxt').innerHTML = 'Terima kasih telah mengikuti Tes Pengetahuan Umum. Kamu <b>belum lulus</b> pada tahap ini. Tetap semangat belajar dan berkarya.';
