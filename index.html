@@ -229,7 +229,7 @@ body.testing #s-test, body.testing #s-test *:not(input):not(textarea){-webkit-us
         <li>Jawaban <b>tersimpan otomatis</b> setiap kali kamu menekan Simpan &amp; Lanjut. Jika sinyal terputus, jawaban akan menunggu dan terkirim sendiri saat koneksi pulih. Pastikan baterai dan kuota cukup.</li>
         <li>Jika halaman tertutup atau perangkat mati, buka kembali tautan ini dan masuk lagi dengan <b>Nomor Peserta dan tanggal lahir yang sama</b> untuk melanjutkan dari soal terakhir. Setiap peserta hanya dapat mengerjakan <b>satu kali</b>.</li>
         <li>Kerjakan secara <b>mandiri dan jujur</b>. Tes berjalan dalam <b>mode layar penuh</b>. Berpindah tab/aplikasi dan keluar dari layar penuh <b>dicatat</b> oleh sistem (tes tertutup sampai kamu kembali ke layar penuh, timer tetap berjalan). Tidak diperlukan bantuan buku, internet, AI, maupun orang lain.</li>
-        <li><b>Kamera wajib aktif</b> dan tes <b>harus dikerjakan dengan laptop/PC</b> (bukan HP atau tablet), dengan Zoom tetap tersambung di laptop yang sama. Selama tes, sistem memantau seberapa sering pandanganmu beralih dari layar dan apakah ada HP di depan kamera. Lirikan singkat tidak dihitung. <b>Video diproses di perangkatmu dan tidak direkam atau dikirim</b>; yang diterima panitia hanya ringkasan angka beserta waktu kejadiannya, yang dipakai untuk memeriksa kewajaran pengerjaan tes dan bukan satu-satunya dasar keputusan. Duduk dengan wajah terlihat jelas dan cahaya cukup.</li>
+        <li><b>Kamera wajib aktif</b> dan tes <b>harus dikerjakan dengan laptop/PC</b> (bukan HP atau tablet). Zoom dibuka lewat <b>HP</b> yang diletakkan diam (tidak dipegang) dan dihubungkan ke listrik, diatur agar wajah, tangan, dan layar laptopmu terlihat, dan sebaiknya berada di luar bingkai kamera laptop. Selama tes, sistem memantau seberapa sering pandanganmu beralih dari layar dan apakah ada HP di depan kamera. Lirikan singkat tidak dihitung. <b>Video diproses di perangkatmu dan tidak direkam atau dikirim</b>; yang diterima panitia hanya ringkasan angka beserta waktu kejadiannya, yang dipakai untuk memeriksa kewajaran pengerjaan tes dan bukan satu-satunya dasar keputusan. Duduk dengan wajah terlihat jelas dan cahaya cukup.</li>
       </ol>
       <label class="check"><input type="checkbox" id="agree"><span>Saya sudah membaca dan menyetujui ketentuan di atas, serta bersedia mengerjakan tes ini dengan jujur.</span></label>
       <label class="check"><input type="checkbox" id="agreeCam"><span>Saya mengerti dan menyetujui kamera laptop saya dipakai untuk pemantauan perhatian selama tes, sebagaimana dijelaskan pada poin tentang kamera di atas.</span></label>
@@ -301,7 +301,7 @@ body.testing #s-test, body.testing #s-test *:not(input):not(textarea){-webkit-us
       <h2>Cek kamera dan pemantauan</h2>
       <p class="muted">Halaman uji ini <b>tidak mengirim data apa pun</b> ke panitia. Jalankan sebelum hari tes, di laptop yang akan dipakai.</p>
       <ol class="rules">
-        <li>Buka Zoom dan nyalakan kamera di Zoom, lalu kembali ke halaman ini dan tekan <b>Mulai cek kamera</b>. Jika gambar kamera di bawah tetap hidup, kamera bisa dipakai bersama Zoom.</li>
+        <li>Tekan <b>Mulai cek kamera</b>. Zoom dijalankan terpisah lewat HP, jadi kamera laptop hanya dipakai halaman ini. Letakkan HP di tempat yang tidak tertangkap kamera laptop; kalau HP terlihat di gambar kamera, status "HP terdeteksi" akan menjadi YA.</li>
         <li>Tatap tengah layar saat kalibrasi. Status harus <b>Terpantau baik</b>.</li>
         <li>Menunduklah seperti melihat HP di pangkuan selama 3 detik: status harus berubah menjadi <b>Menunduk</b>. Toleh ke samping 3 detik: <b>Pandangan beralih</b>. Tutup kamera dengan tangan: <b>Wajah tidak terlihat</b>.</li>
         <li>Lirikan di bawah 2,5 detik tidak dihitung sebagai episode.</li>
@@ -1179,7 +1179,7 @@ const GZ = (() => {
 const CAM_MSG = {
   DENIED: 'Izin kamera ditolak. Klik ikon kunci/kamera di bilah alamat browser, ubah Kamera menjadi Izinkan, lalu coba lagi.',
   NOCAM: 'Kamera tidak ditemukan di perangkat ini. Gunakan laptop yang memiliki kamera.',
-  BUSY: 'Kamera sedang dipakai aplikasi lain dan tidak bisa dibagi. Tutup aplikasi yang memakai kamera (kecuali Zoom), lalu coba lagi. Jika kamera tetap tidak bisa dipakai bersama Zoom, hubungi panitia.',
+  BUSY: 'Kamera sedang dipakai aplikasi lain dan tidak bisa dibagi. Tutup aplikasi lain yang memakai kamera laptop (termasuk Zoom di laptop), lalu coba lagi. Jika masih gagal, hubungi panitia.',
   NOAPI: 'Browser ini tidak mendukung akses kamera. Gunakan Chrome atau Edge versi terbaru di laptop.',
   LIB: 'Komponen pemantauan gagal dimuat. Periksa koneksi internet lalu coba lagi.',
   MODEL: 'Model pemantauan gagal dimuat. Periksa koneksi internet lalu coba lagi.',
