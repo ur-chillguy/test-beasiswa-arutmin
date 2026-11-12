@@ -110,6 +110,32 @@ main{max-width:820px;margin:0 auto;padding:18px 16px 120px}
 @media (prefers-reduced-motion:reduce){.spin{animation-duration:3s}}
 
 
+/* pemantauan kamera */
+.camchip{position:fixed;left:12px;bottom:86px;z-index:18;width:104px;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);overflow:hidden;font-size:.72rem;line-height:1.25}
+.camchip.hide{left:-400px}
+.camchip video{display:block;width:104px;height:78px;object-fit:cover;background:#222;transform:scaleX(-1)}
+.camchip .lab{display:flex;align-items:center;gap:6px;padding:4px 7px;color:var(--muted)}
+.camchip .lab i{flex:none;width:9px;height:9px;border-radius:50%;background:#9aa39b}
+.camchip.on .lab i{background:var(--ok)}
+.camchip.away .lab i,.camchip.down .lab i{background:#c08a1e}
+.camchip.noface .lab i,.camchip.camlost .lab i{background:var(--danger)}
+@media (max-width:560px){.camchip{width:84px}.camchip video{width:84px;height:63px}}
+.camov{z-index:60}
+.camov video{width:100%;max-width:300px;aspect-ratio:4/3;object-fit:cover;border-radius:12px;background:#222;transform:scaleX(-1);display:block;margin:0 auto 12px}
+.cbar{height:8px;border-radius:99px;background:var(--soft);overflow:hidden;margin:10px 0 0}
+.cbar i{display:block;height:100%;width:0;background:var(--brand);transition:width .25s linear}
+.cekt{width:100%;border-collapse:collapse;font-size:.95rem;margin:10px 0 14px}
+.cekt td{padding:6px 8px;border-bottom:1px solid var(--line)}
+.cekt td:first-child{color:var(--muted);width:46%}
+.cekst{display:inline-block;padding:3px 10px;border-radius:99px;font-weight:650;background:var(--soft)}
+.cekst.on{background:var(--brand-soft);color:var(--brand-d)}
+.cekst.away,.cekst.down{background:var(--accent-soft);color:var(--accent)}
+.cekst.noface,.cekst.camlost{background:var(--danger-soft);color:var(--danger)}
+.note-np{background:var(--brand-soft,#e8f1ec);border-radius:12px;padding:10px 14px;font-size:.95rem}
+.overlay{overflow-y:auto}
+.box{max-height:calc(100dvh - 40px);overflow-y:auto}
+
+.nimedit{margin:-4px 0 14px}.nimedit form{margin-top:10px}.nimedit .linkbtn{font-size:.9rem}
 /* halaman status */
 .kv{width:100%;border-collapse:collapse;margin:6px 0 16px;font-size:.98rem}
 .kv td{padding:8px 4px;border-bottom:1px solid var(--line);vertical-align:top}
@@ -195,6 +221,14 @@ a.btn{display:inline-flex;align-items:center;justify-content:center;text-decorat
       <h2>Periksa biodatamu</h2>
       <p>Pastikan data di bawah ini benar. Data inilah yang tercatat sebagai peserta tes.</p>
       <table class="kv" id="kvKonf"></table>
+      <div class="nimedit">
+        <button class="linkbtn" type="button" data-nimtoggle>NIM salah? Ubah NIM</button>
+        <form data-nimform hidden novalidate autocomplete="off">
+          <div class="field"><label>NIM yang benar</label>
+            <input type="text" maxlength="25" autocapitalize="characters" autocomplete="off"><div class="help">Perubahan langsung tersimpan, tanpa menunggu panitia. Bisa diubah maksimal 3 kali dan tidak bisa lagi setelah kamu memulai tes.</div><div class="msg">NIM hanya berisi huruf dan angka (5–25 karakter).</div></div>
+          <button class="btn ghost" type="submit">Simpan NIM</button>
+        </form>
+      </div>
       <div id="needBox" hidden>
         <p class="note">Data berikut belum ada di catatan panitia. Isi sekali dengan benar; setelah dikonfirmasi, perubahan hanya bisa lewat panitia.</p>
         <div class="field" id="nTempatW"><label for="n_tempat">Tempat lahir <em>*</em></label>
@@ -237,6 +271,14 @@ a.btn{display:inline-flex;align-items:center;justify-content:center;text-decorat
       <div class="note" id="nmInfo"></div>
       <h3>Ringkasan biodata</h3>
       <table class="kv" id="kvNomor"></table>
+      <div class="nimedit">
+        <button class="linkbtn" type="button" data-nimtoggle>NIM salah? Ubah NIM</button>
+        <form data-nimform hidden novalidate autocomplete="off">
+          <div class="field"><label>NIM yang benar</label>
+            <input type="text" maxlength="25" autocapitalize="characters" autocomplete="off"><div class="help">Perubahan langsung tersimpan, tanpa menunggu panitia. Bisa diubah maksimal 3 kali dan tidak bisa lagi setelah kamu memulai tes.</div><div class="msg">NIM hanya berisi huruf dan angka (5–25 karakter).</div></div>
+          <button class="btn ghost" type="submit">Simpan NIM</button>
+        </form>
+      </div>
       <form id="fEmail" novalidate autocomplete="off">
         <div class="field"><label for="e_email">Email</label>
           <input id="e_email" type="email" inputmode="email" maxlength="100" autocomplete="off"><div class="msg">Alamat email tidak valid.</div></div>
@@ -324,6 +366,11 @@ function demoApi(p){
     if (p.action === 'konfirmasi'){
       if (!db.konf){ const i = p.isi || {}; if (!db.tempat) db.tempat = i.tempat; if (!db.fak) db.fak = i.fak; if (!db.lahir){ const [Y, M, D] = String(i.lahir).split('-'); db.lahir = D + '-' + M + '-' + Y; } db.nomor = 'TPU-DEMO1'; db.konf = true; }
       db.email = p.email; save(); return res(view());
+    }
+    if (p.action === 'ubahnim'){
+      const n = normNIM(p.nim); if (!/^[A-Z0-9][A-Z0-9.\-\/]{4,24}$/.test(n)) return res({ ok: false, err: 'NIM', msg: 'NIM hanya berisi huruf dan angka (5–25 karakter).' });
+      if (n === 'DEMO99999') return res({ ok: false, err: 'NIM_DIPAKAI', msg: 'NIM tersebut sudah tercatat atas peserta lain. Periksa kembali pengetikanmu, atau hubungi panitia.' });
+      db.nim = n; save(); return res(view());
     }
     if (p.action === 'koreksi') return res({ ok: true });
     res({ ok: false, err: 'BAD_REQUEST' });
@@ -415,7 +462,7 @@ $('konfGo').addEventListener('click', () => {
   const eok = bad('n_email', !okEmail(email));
   if (!isi || !eok){ err('konfErr', 'Lengkapi isian yang ditandai merah.'); return; }
   const d = Object.assign({}, V.d, isi.lahir ? { lahir: human(isi.lahir) } : {}, isi.tempat ? { tempat: isi.tempat } : {}, isi.fak ? { fak: isi.fak } : {});
-  overlay('Konfirmasi biodata', '<table class="kv">' + kvRows(d) + '<tr><td>Email</td><td><b>' + esc(email) + '</b></td></tr></table><p>Setelah dikonfirmasi, data selain email hanya bisa diubah lewat panitia.</p>', false, [
+  overlay('Konfirmasi biodata', '<table class="kv">' + kvRows(d) + '<tr><td>Email</td><td><b>' + esc(email) + '</b></td></tr></table><p>Setelah dikonfirmasi, data selain email dan NIM hanya bisa diubah lewat panitia.</p>', false, [
     { label: 'Periksa lagi', cls: 'ghost', fn: overlayOff },
     { label: 'Ya, konfirmasi', cls: 'primary', fn: () => sendKonf(email, isi) }
   ]);
@@ -496,6 +543,38 @@ $('fEmail').addEventListener('submit', async e => {
   } catch(x){ banner(NET, 'err'); }
   finally { $('eGo').disabled = false; }
 });
+
+/* ---------- ubah NIM (langsung, tanpa panitia) ---------- */
+document.querySelectorAll('.nimedit').forEach(box => {
+  const tg = box.querySelector('[data-nimtoggle]'), fm = box.querySelector('[data-nimform]'), inp = fm.querySelector('input');
+  tg.addEventListener('click', () => { fm.hidden = !fm.hidden; inp.value = V ? V.d.nim : ''; fm.querySelector('.field').classList.remove('bad'); if (!fm.hidden) inp.focus(); });
+  fm.addEventListener('submit', e => {
+    e.preventDefault();
+    const nim = normNIM(inp.value), fld = fm.querySelector('.field');
+    const ok = /^[A-Z0-9][A-Z0-9.\-\/]{4,24}$/.test(nim); fld.classList.toggle('bad', !ok); if (!ok) return;
+    if (nim === V.d.nim){ fm.hidden = true; return; }
+    overlay('Ubah NIM?', '<p>NIM akan diganti dari <b>' + esc(V.d.nim) + '</b> menjadi <b>' + esc(nim) + '</b>. Perubahan langsung tersimpan sebagai NIM resmimu.</p>', false, [
+      { label: 'Periksa lagi', cls: 'ghost', fn: overlayOff },
+      { label: 'Ya, simpan NIM', cls: 'primary', fn: () => sendNim(nim, fm, fld) }
+    ]);
+  });
+});
+async function sendNim(nim, fm, fld){
+  overlay('Menyimpan…', '', true);
+  try {
+    const r = await api({ action: 'ubahnim', k: V.k, nim });
+    overlayOff();
+    if (!r.ok){
+      if (r.err === 'SESI'){ banner(ERR.SESI, 'err'); show('cek'); return; }
+      if (r.err === 'NIM') fld.classList.add('bad');
+      banner(r.msg || ERR[r.err] || 'Gagal menyimpan NIM.', 'err', 9000); return;
+    }
+    V.d.nim = r.d.nim; fm.hidden = true;
+    if (!$('s-konf').hidden) $('kvKonf').innerHTML = kvRows(V.d, V.need);
+    if (!$('s-nomor').hidden) $('kvNomor').innerHTML = kvRows(V.d) + '<tr><td>Halaman tes</td><td><b><a href="' + esc(TES_URL) + '">' + esc(new URL(TES_URL, location.href).href) + '</a></b></td></tr>';
+    banner('NIM tersimpan: ' + V.d.nim, 'ok', 5000);
+  } catch(x){ overlayOff(); banner(NET, 'err'); }
+}
 
 /* ---------- 5. hasil ---------- */
 function showHasil(r){
