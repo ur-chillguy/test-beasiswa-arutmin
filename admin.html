@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Panel Admin – Tes Online</title>
+<style>
+:root{--bg:#f3f1ea;--card:#fff;--ink:#18221d;--muted:#586259;--line:#d6d2c4;--soft:#ece9df;--brand:#14532d;--brand-d:#0e3d21;--brand-soft:#e3efe7;--accent:#9a4a07;--accent-soft:#fdeed6;--danger:#b42318;--danger-soft:#fde8e6;--ok:#157a3d;--r:12px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+[hidden]{display:none!important}
+h1,h2,h3{line-height:1.25;margin:0 0 .5em}h1{font-size:1.35rem}h2{font-size:1.15rem}h3{font-size:1rem}
+.top{background:var(--brand);color:#fff;border-bottom:3px solid var(--brand-d)}
+.top-in{max-width:1080px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.top b{font-size:1.05rem}.top small{color:#cfe3d6;display:block}
+.wrap{max-width:1080px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.muted,small{color:var(--muted)}
+label{display:block;font-weight:600;margin:10px 0 4px}
+input,select,textarea{width:100%;font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+textarea{min-height:90px;resize:vertical}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid #9fd0b0;outline-offset:1px}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:#fff;padding:7px 12px;color:var(--ink)}
+button.p{background:var(--brand);border-color:var(--brand);color:#fff;font-weight:600}
+button.p:hover{background:var(--brand-d)}
+button.d{color:var(--danger);border-color:#f0b3ac}
+button[disabled]{opacity:.5;cursor:not-allowed}
+.tabs{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:14px}
+.tabs button{border-radius:999px;padding:7px 14px}
+.tabs button[aria-selected=true]{background:var(--brand);color:#fff;border-color:var(--brand);font-weight:600}
+.row{display:flex;gap:12px;flex-wrap:wrap}.row>*{flex:1;min-width:180px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}.bar .sp{flex:1}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{padding:7px 8px;border-bottom:1px solid var(--soft);text-align:left;vertical-align:top}
+th{background:var(--soft);position:sticky;top:0;font-size:.82rem;text-transform:uppercase;letter-spacing:.03em}
+.scroll{overflow:auto;max-height:62vh;border:1px solid var(--line);border-radius:10px}
+.tag{display:inline-block;padding:1px 8px;border-radius:99px;font-size:.78rem;background:var(--brand-soft);color:var(--brand-d)}
+.tag.off{background:var(--soft);color:var(--muted)}.tag.warn{background:var(--accent-soft);color:var(--accent)}
+.msg{padding:9px 12px;border-radius:10px;margin:8px 0;background:var(--accent-soft);color:#6b3304;border:1px solid #efcf9c}
+.msg.err{background:var(--danger-soft);color:#7a1a12;border-color:#f0b3ac}.msg.ok{background:var(--brand-soft);color:#0e3d21;border-color:#b7d6c1}
+.opt{display:grid;grid-template-columns:28px 1fr 84px;gap:8px;align-items:center;margin:6px 0}
+.opt b{text-align:center}
+.q-stem{max-width:520px;white-space:pre-wrap}
+.total{font-weight:700}.total.bad{color:var(--danger)}.total.good{color:var(--ok)}
+dialog{border:1px solid var(--line);border-radius:14px;max-width:760px;width:calc(100% - 24px);padding:18px}
+dialog::backdrop{background:rgba(0,0,0,.4)}
+code{background:var(--soft);padding:1px 5px;border-radius:5px}
+@media(max-width:640px){.q-stem{max-width:none}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in"><div><b>Panel Admin Tes Online</b><small id="hSub">Bank soal, waktu, bobot, dan hasil</small></div><button id="logout" hidden>Keluar</button></div></header>
+<main class="wrap">
+
+<section id="vLogin" class="card" style="max-width:420px;margin:40px auto" hidden>
+  <h1>Masuk admin</h1>
+  <p class="muted">Masukkan passcode admin. Passcode disetel panitia di Apps Script (<code>admSetPasscode</code>).</p>
+  <label for="pass">Passcode</label>
+  <input id="pass" type="password" autocomplete="current-password">
+  <div class="bar"><button class="p" id="goLogin">Masuk</button></div>
+  <div id="loginMsg"></div>
+</section>
+
+<section id="vApp" hidden>
+  <div class="tabs" role="tablist" id="tabs"></div>
+  <div id="msg"></div>
+
+  <!-- SOAL -->
+  <div id="t-soal" hidden>
+    <div class="card">
+      <div class="bar"><h2 style="margin:0">Bank soal</h2><span class="muted" id="soalInfo"></span><span class="sp"></span>
+        <input id="soalCari" placeholder="Cari soal…" style="max-width:220px"><select id="soalKat" style="max-width:200px"></select>
+        <button class="p" id="soalBaru">+ Soal baru</button></div>
+      <div id="lockInfo"></div>
+      <div class="scroll"><table><thead><tr><th>ID</th><th>Kat.</th><th>Soal</th><th>Opsi</th><th>Batas</th><th>Status</th><th></th></tr></thead><tbody id="soalBody"></tbody></table></div>
+    </div>
+  </div>
+
+  <!-- IMPOR -->
+  <div id="t-impor" hidden>
+    <div class="card">
+      <h2>Unggah soal dari Excel / CSV</h2>
+      <p class="muted">Satu baris = satu soal. Kolom: <code>Kategori</code>, <code>Soal</code>, <code>Opsi A</code>…<code>Opsi F</code>, <code>Skor A</code>…<code>Skor F</code> (0–10; skor tertinggi = kunci), <code>Tipe</code>, <code>Urutan Tetap</code> (Ya/Tidak), <code>Batas Waktu (dtk)</code>, <code>Catatan</code>. Kategori diisi kode atau nama; kategori baru dibuat dengan bobot 0 (atur di tab Bobot). Soal bergambar belum didukung.</p>
+      <div class="bar"><button id="tpl">Unduh template CSV</button><input type="file" id="file" accept=".csv,.xlsx,.xls" style="max-width:340px">
+        <select id="impMode" style="max-width:300px"><option value="tambah">Tambahkan ke bank yang ada</option><option value="ganti">Ganti seluruh bank</option></select>
+        <label style="margin:0;font-weight:400"><input type="checkbox" id="impSkip" style="width:auto"> Lewati baris bermasalah</label></div>
+      <div id="impInfo"></div>
+      <div class="scroll" id="impPrevBox" hidden><table><thead id="impHead"></thead><tbody id="impBody"></tbody></table></div>
+      <div class="bar"><button class="p" id="impGo" disabled>Impor sekarang</button></div>
+    </div>
+  </div>
+
+  <!-- WAKTU -->
+  <div id="t-waktu" hidden>
+    <div class="card">
+      <h2>Waktu &amp; jadwal</h2>
+      <div class="row">
+        <div><label for="s_durasi">Durasi total (menit)</label><input id="s_durasi" type="number" min="5" max="600" step="1"><small>Dihitung sejak peserta menekan Mulai Tes.</small></div>
+        <div><label for="s_lim">Batas waktu per soal bawaan (detik)</label><input id="s_lim" type="number" min="10" max="1800" step="5"><small>Dipakai bila soal tidak punya batas sendiri.</small></div>
+      </div>
+      <div class="row">
+        <div><label for="s_open">Tes dibuka (WITA)</label><input id="s_open" type="datetime-local"><small>Kosong = langsung dibuka.</small></div>
+        <div><label for="s_until">Batas terakhir mulai (WITA)</label><input id="s_until" type="datetime-local"><small>Setelah ini peserta baru tidak bisa memulai.</small></div>
+      </div>
+      <div class="row">
+        <div><label for="s_acakS">Acak urutan soal</label><select id="s_acakS"><option value="YA">Ya (tiap peserta berbeda)</option><option value="TIDAK">Tidak (urutan bank)</option></select></div>
+        <div><label for="s_acakO">Acak urutan opsi</label><select id="s_acakO"><option value="YA">Ya</option><option value="TIDAK">Tidak</option></select></div>
+        <div><label for="s_bank">Sumber soal tes</label><select id="s_bank"><option value="TIDAK">Soal bawaan di halaman tes (sistem lama)</option><option value="YA">Bank soal dari panel ini</option></select></div>
+      </div>
+      <label for="s_umum">Waktu pengumuman hasil (teks, tampil di Cek Status)</label>
+      <input id="s_umum" placeholder="2026-11-20 10:00">
+      <div class="bar"><button class="p" id="saveSet">Simpan pengaturan</button><span class="muted" id="cfgNow"></span></div>
+      <div class="msg">Mode "Bank soal dari panel ini" hanya bisa dipilih bila ada soal aktif dan total bobot kategori = 100. Jangan ubah soal, durasi, atau bobot setelah peserta mulai mengerjakan.</div>
+    </div>
+  </div>
+
+  <!-- BOBOT -->
+  <div id="t-bobot" hidden>
+    <div class="card">
+      <h2>Bobot penilaian per kategori</h2>
+      <p class="muted">Nilai akhir = Σ (nilai kategori × bobot). Nilai kategori = poin diperoleh ÷ poin maksimal kategori × 100. Total bobot wajib 100.</p>
+      <div class="scroll"><table><thead><tr><th>Kode</th><th>Nama kategori</th><th>Bobot (%)</th><th>Soal aktif</th><th></th></tr></thead><tbody id="katBody"></tbody></table></div>
+      <div class="bar"><button id="katAdd">+ Kategori</button><button id="katEq">Ratakan</button><span class="sp"></span><span class="total" id="katTot"></span><button class="p" id="katSave">Simpan bobot</button></div>
+    </div>
+  </div>
+
+  <!-- HASIL -->
+  <div id="t-hasil" hidden>
+    <div class="card">
+      <div class="bar"><h2 style="margin:0">Hasil &amp; peringkat</h2><span class="sp"></span>
+        <button id="hLoad">Muat hasil</button><button id="hCsv" disabled>Unduh CSV</button><button id="hSheet" disabled>Tulis ke sheet Hasil_Nilai</button></div>
+      <div id="hInfo" class="muted">Klik "Muat hasil" untuk menghitung dari jawaban peserta.</div>
+      <div class="scroll"><table><thead id="hHead"></thead><tbody id="hBody"></tbody></table></div>
+    </div>
+    <div class="card">
+      <h2>Tandai Lulus / Tidak Lulus</h2>
+      <p class="muted">Menulis kolom <b>Hasil TPU</b> di sheet Pendaftar_TPU (terbaca di halaman Cek Status). Selalu lihat pratinjau dulu.</p>
+      <div class="row">
+        <div><label for="a_mode">Cara</label><select id="a_mode"><option value="topn">N peringkat teratas</option><option value="ambang">Nilai minimal</option><option value="daftar">Daftar NIM manual</option></select></div>
+        <div id="a_valBox"><label for="a_val" id="a_valL">Jumlah peringkat</label><input id="a_val" type="number" min="0" step="any"></div>
+      </div>
+      <div id="a_nimBox" hidden><label for="a_nim">NIM (satu per baris / pisah koma)</label><textarea id="a_nim"></textarea></div>
+      <label style="font-weight:400"><input type="checkbox" id="a_semua" style="width:auto"> Tandai juga yang tidak mengikuti tes sebagai Tidak Lulus</label>
+      <div class="bar"><button id="aDry">Pratinjau</button><button class="p" id="aGo" disabled>Terapkan</button></div>
+      <div id="aInfo"></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<dialog id="dlg">
+  <form method="dialog" id="qForm" style="margin:0">
+    <h2 id="dTitle">Soal</h2>
+    <div class="row">
+      <div><label for="q_kat">Kategori</label><select id="q_kat"></select></div>
+      <div><label for="q_lim">Batas waktu soal (detik)</label><input id="q_lim" type="number" min="10" max="1800" placeholder="kosong = bawaan"></div>
+    </div>
+    <label for="q_stem">Teks soal <small>(**tebal** didukung)</small></label>
+    <textarea id="q_stem" maxlength="1500"></textarea>
+    <label>Opsi jawaban &amp; skor <small>(isi berurutan dari A; skor 0–10, skor tertinggi = kunci)</small></label>
+    <div id="q_opts"></div>
+    <div class="row">
+      <div><label for="q_fixed">Urutan opsi</label><select id="q_fixed"><option value="0">Boleh diacak</option><option value="1">Tetap (A–F sesuai urutan)</option></select></div>
+      <div><label for="q_aktif">Status</label><select id="q_aktif"><option value="1">Aktif</option><option value="0">Nonaktif</option></select></div>
+    </div>
+    <label for="q_cat">Catatan internal (tidak tampil ke peserta)</label>
+    <input id="q_cat" maxlength="500">
+    <div id="qErr"></div>
+    <div class="bar"><span class="sp"></span><button type="button" id="qCancel">Batal</button><button type="button" class="p" id="qSave">Simpan soal</button></div>
+  </form>
+</dialog>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+(() => {
+'use strict';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxbgiHgQYxTo2rMCIRkMjqAgiMIQfDBuPJrKG-2jzB0F3XnTpdQXlmRtRYg-wmtCQLU/exec';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const TK = 'arutmin_adm_tok';
+let AT = ''; try { AT = sessionStorage.getItem(TK) || ''; } catch(e){}
+let D = null;            // data dari admin_get
+let H = null;            // hasil
+let IMP = [];            // baris impor
+let editing = null;
+
+async function call(o, ms = 40000){
+  const ctl = new AbortController(), to = setTimeout(() => ctl.abort(), ms);
+  try {
+    const r = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(Object.assign({ at: AT }, o)), headers: { 'Content-Type': 'text/plain;charset=utf-8' }, signal: ctl.signal, redirect: 'follow' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const j = await r.json();
+    if (j && j.err === 'AUTH') { toLogin('Sesi habis. Masuk lagi.'); }
+    return j;
+  } catch(e){ return { ok: false, err: 'NET', msg: 'Tidak bisa terhubung ke server. Coba lagi.' }; }
+  finally { clearTimeout(to); }
+}
+function say(t, k, box){ const b = $(box || 'msg'); b.innerHTML = t ? '<div class="msg ' + (k || '') + '">' + esc(t) + '</div>' : ''; if (t && k === 'ok' && !box) setTimeout(() => { if ($('msg').textContent === t) $('msg').innerHTML = ''; }, 6000); }
+function toLogin(m){ AT = ''; try { sessionStorage.removeItem(TK); } catch(e){} $('vApp').hidden = true; $('vLogin').hidden = false; $('logout').hidden = true; $('loginMsg').innerHTML = m ? '<div class="msg err">' + esc(m) + '</div>' : ''; }
+
+/* ---------- login ---------- */
+async function login(){
+  const p = $('pass').value; if (!p) return;
+  $('goLogin').disabled = true;
+  const r = await call({ action: 'admin_login', passcode: p });
+  $('goLogin').disabled = false;
+  if (!r.ok) { $('loginMsg').innerHTML = '<div class="msg err">' + esc(r.msg || 'Gagal masuk.') + '</div>'; return; }
+  AT = r.at; try { sessionStorage.setItem(TK, AT); } catch(e){}
+  $('pass').value = ''; await boot();
+}
+$('goLogin').onclick = login; $('pass').onkeydown = e => { if (e.key === 'Enter') login(); };
+$('logout').onclick = () => toLogin('');
+
+async function boot(){
+  const r = await call({ action: 'admin_get' });
+  if (!r.ok){ if (r.err !== 'AUTH') toLogin(r.msg); return; }
+  D = r; $('vLogin').hidden = true; $('vApp').hidden = false; $('logout').hidden = false;
+  render(); if (!curTab) tab('soal');
+}
+
+/* ---------- tab ---------- */
+const TABS = [['soal','Soal'],['impor','Unggah soal'],['waktu','Waktu & jadwal'],['bobot','Bobot nilai'],['hasil','Hasil']];
+let curTab = '';
+function tab(t){
+  curTab = t;
+  $('tabs').innerHTML = TABS.map(x => '<button role="tab" aria-selected="' + (x[0] === t) + '" data-t="' + x[0] + '">' + x[1] + '</button>').join('');
+  TABS.forEach(x => $('t-' + x[0]).hidden = x[0] !== t);
+  $('tabs').querySelectorAll('button').forEach(b => b.onclick = () => tab(b.dataset.t));
+}
+function render(){ renderKatSel(); renderSoal(); renderSet(); renderKat(); }
+
+/* ---------- soal ---------- */
+const katName = k => { const x = D.kat.find(y => y.kode === k); return x ? x.nama : k; };
+function renderKatSel(){
+  const keep = $('soalKat').value;
+  $('soalKat').innerHTML = '<option value="">Semua kategori</option>' + D.kat.map(k => '<option value="' + esc(k.kode) + '">' + esc(k.nama) + '</option>').join('');
+  $('soalKat').value = keep;
+}
+function renderSoal(){
+  const q = $('soalCari').value.trim().toLowerCase(), kf = $('soalKat').value;
+  const list = D.bank.filter(x => (!kf || x.kat === kf) && (!q || (x.stem + ' ' + x.opts.join(' ') + ' ' + x.id).toLowerCase().includes(q)));
+  const act = D.bank.filter(x => x.aktif).length;
+  $('soalInfo').textContent = D.bank.length + ' soal · ' + act + ' aktif';
+  $('lockInfo').innerHTML = D.adaJawaban ? '<div class="msg">Sudah ada jawaban peserta di sheet. Soal tidak bisa dihapus (nonaktifkan saja) dan mode "ganti seluruh bank" dikunci.</div>' : '';
+  $('soalBody').innerHTML = list.length ? list.map(x => {
+    const best = Math.max.apply(null, x.skor), n = x.opts.filter(Boolean).length;
+    return '<tr><td><b>' + esc(x.id) + '</b></td><td>' + esc(x.kat) + '</td><td class="q-stem">' + esc(x.stem.length > 220 ? x.stem.slice(0, 220) + '…' : x.stem) + '</td>'
+      + '<td>' + n + ' opsi<br><small>skor maks ' + best + (x.fixed ? ' · urutan tetap' : '') + '</small></td>'
+      + '<td>' + (x.lim ? x.lim + ' dtk' : '<small>bawaan</small>') + '</td>'
+      + '<td><span class="tag ' + (x.aktif ? '' : 'off') + '">' + (x.aktif ? 'Aktif' : 'Nonaktif') + '</span></td>'
+      + '<td style="white-space:nowrap"><button data-a="edit" data-id="' + x.id + '">Ubah</button> <button data-a="tog" data-id="' + x.id + '">' + (x.aktif ? 'Nonaktifkan' : 'Aktifkan') + '</button> <button class="d" data-a="del" data-id="' + x.id + '"' + (D.adaJawaban ? ' disabled' : '') + '>Hapus</button></td></tr>';
+  }).join('') : '<tr><td colspan="7" class="muted">Belum ada soal. Klik "+ Soal baru" atau unggah dari Excel/CSV di tab Unggah soal.</td></tr>';
+}
+$('soalCari').oninput = renderSoal; $('soalKat').onchange = renderSoal;
+$('soalBody').onclick = async e => {
+  const b = e.target.closest('button'); if (!b) return; const id = b.dataset.id, q = D.bank.find(x => x.id === id);
+  if (b.dataset.a === 'edit') openQ(q);
+  if (b.dataset.a === 'tog'){ b.disabled = true; const r = await call({ action: 'admin_toggle_q', id, aktif: !q.aktif }); if (!r.ok) say(r.msg, 'err'); await boot(); }
+  if (b.dataset.a === 'del'){ if (!confirm('Hapus soal ' + id + ' secara permanen? Tindakan ini tidak bisa dibatalkan.')) return; const r = await call({ action: 'admin_delete_q', id }); say(r.ok ? 'Soal ' + id + ' dihapus.' : r.msg, r.ok ? 'ok' : 'err'); await boot(); }
+};
+$('soalBaru').onclick = () => openQ(null);
+function optRows(q){
+  let h = ''; for (let i = 0; i < 6; i++) h += '<div class="opt"><b>' + 'ABCDEF'[i] + '</b><input id="o' + i + '" maxlength="600" value="' + esc(q ? q.opts[i] : '') + '" aria-label="Opsi ' + 'ABCDEF'[i] + '"><input id="k' + i + '" type="number" min="0" max="10" step="0.5" value="' + (q && q.opts[i] ? q.skor[i] : '') + '" placeholder="skor" aria-label="Skor ' + 'ABCDEF'[i] + '"></div>';
+  $('q_opts').innerHTML = h;
+}
+function openQ(q){
+  editing = q; $('dTitle').textContent = q ? 'Ubah soal ' + q.id : 'Soal baru'; $('qErr').innerHTML = '';
+  $('q_kat').innerHTML = D.kat.map(k => '<option value="' + esc(k.kode) + '">' + esc(k.nama) + ' (' + esc(k.kode) + ')</option>').join('');
+  $('q_kat').value = q ? q.kat : ($('soalKat').value || D.kat[0].kode);
+  $('q_stem').value = q ? q.stem : ''; $('q_lim').value = q && q.lim ? q.lim : ''; $('q_fixed').value = q && q.fixed ? '1' : '0';
+  $('q_aktif').value = !q || q.aktif ? '1' : '0'; $('q_cat').value = q ? q.cat : ''; optRows(q);
+  if (!q){ $('o0').value = ''; }
+  $('dlg').showModal(); $('q_stem').focus();
+}
+$('qCancel').onclick = () => $('dlg').close();
+$('qSave').onclick = async () => {
+  const opts = [], skor = [];
+  for (let i = 0; i < 6; i++){ opts.push($('o' + i).value.trim()); skor.push($('k' + i).value === '' ? 0 : Number($('k' + i).value)); }
+  const q = { id: editing ? editing.id : '', kat: $('q_kat').value, stem: $('q_stem').value, opts, skor, fixed: $('q_fixed').value === '1', aktif: $('q_aktif').value === '1', lim: $('q_lim').value === '' ? 0 : Number($('q_lim').value), cat: $('q_cat').value };
+  $('qSave').disabled = true; const r = await call({ action: 'admin_save_q', q }); $('qSave').disabled = false;
+  if (!r.ok){ say(r.msg || 'Gagal menyimpan.', 'err', 'qErr'); return; }
+  $('dlg').close(); say('Soal ' + r.id + ' disimpan.', 'ok'); await boot();
+};
+
+/* ---------- impor ---------- */
+const nrm = s => String(s == null ? '' : s).toLowerCase().replace(/[^a-z0-9]/g, '');
+const COLS = ['A','B','C','D','E','F'];
+function mapRows(aoa){
+  if (!aoa.length) return [];
+  const head = aoa[0].map(nrm), find = (...ks) => head.findIndex(h => ks.some(k => h === k));
+  const has = (...ks) => head.findIndex(h => ks.some(k => h.includes(k)));
+  const ix = { kat: find('kategori', 'kat', 'kode'), stem: Math.max(find('soal', 'pertanyaan', 'stem', 'teksoal'), -1), tipe: find('tipe', 'jenis'), fixed: has('urutantetap', 'fixed', 'tetap'), lim: has('batas', 'lim', 'detik'), cat: has('catatan', 'cat', 'keterangan') };
+  if (ix.stem < 0) ix.stem = has('soal', 'pertanyaan');
+  const op = COLS.map(c => find('opsi' + c.toLowerCase(), 'opsi' + c.toLowerCase() + 'teks', c.toLowerCase(), 'pilihan' + c.toLowerCase())), sk = COLS.map(c => find('skor' + c.toLowerCase(), 'poin' + c.toLowerCase(), 'nilai' + c.toLowerCase()));
+  if (ix.kat < 0 || ix.stem < 0 || op[0] < 0) throw new Error('Header tidak dikenali. Pastikan ada kolom Kategori, Soal, dan Opsi A–F (unduh template).');
+  return aoa.slice(1).filter(r => r.some(c => String(c == null ? '' : c).trim() !== '')).map(r => ({
+    kat: r[ix.kat], stem: r[ix.stem], tipe: ix.tipe >= 0 ? r[ix.tipe] : '', fixed: ix.fixed >= 0 && /^(ya|y|true|1)$/i.test(String(r[ix.fixed] || '')),
+    lim: ix.lim >= 0 ? Number(r[ix.lim]) || 0 : 0, cat: ix.cat >= 0 ? r[ix.cat] : '',
+    opts: op.map(i => i >= 0 && r[i] != null ? String(r[i]).trim() : ''), skor: sk.map(i => i >= 0 ? Number(r[i]) || 0 : 0) }));
+}
+function csvParse(t){
+  const out = []; let row = [], cur = '', q = false;
+  t = t.replace(/^﻿/, ''); const d = (t.split('\n')[0].match(/;/g) || []).length > (t.split('\n')[0].match(/,/g) || []).length ? ';' : ',';
+  for (let i = 0; i < t.length; i++){ const c = t[i];
+    if (q){ if (c === '"'){ if (t[i + 1] === '"'){ cur += '"'; i++; } else q = false; } else cur += c; }
+    else if (c === '"') q = true; else if (c === d){ row.push(cur); cur = ''; }
+    else if (c === '\n' || c === '\r'){ if (c === '\r' && t[i + 1] === '\n') i++; row.push(cur); out.push(row); row = []; cur = ''; } else cur += c; }
+  if (cur !== '' || row.length){ row.push(cur); out.push(row); } return out;
+}
+$('file').onchange = async e => {
+  const f = e.target.files[0]; if (!f) return; IMP = []; $('impGo').disabled = true; $('impInfo').innerHTML = ''; $('impPrevBox').hidden = true;
+  try {
+    let aoa;
+    if (/\.csv$/i.test(f.name)) aoa = csvParse(await f.text());
+    else { if (!window.XLSX) throw new Error('Pustaka Excel gagal dimuat (cek internet). Pakai CSV.'); const wb = XLSX.read(await f.arrayBuffer(), { type: 'array' }); aoa = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1, defval: '' }); }
+    IMP = mapRows(aoa);
+    if (!IMP.length) throw new Error('Tidak ada baris soal di file.');
+    $('impHead').innerHTML = '<tr><th>#</th><th>Kategori</th><th>Soal</th><th>Opsi</th><th>Skor</th><th>Batas</th></tr>';
+    $('impBody').innerHTML = IMP.slice(0, 200).map((r, i) => '<tr><td>' + (i + 1) + '</td><td>' + esc(r.kat) + '</td><td class="q-stem">' + esc(String(r.stem || '').slice(0, 160)) + '</td><td>' + r.opts.filter(Boolean).length + '</td><td>' + r.skor.slice(0, r.opts.filter(Boolean).length).join(' / ') + '</td><td>' + (r.lim || '') + '</td></tr>').join('');
+    $('impPrevBox').hidden = false; $('impGo').disabled = false;
+    say(IMP.length + ' baris terbaca dari "' + f.name + '". Periksa pratinjau lalu klik Impor.', 'ok', 'impInfo');
+  } catch(err){ say(err.message, 'err', 'impInfo'); }
+};
+$('impGo').onclick = async () => {
+  if ($('impMode').value === 'ganti' && !confirm('Mengganti seluruh bank akan menghapus semua soal yang ada sekarang. Lanjutkan?')) return;
+  $('impGo').disabled = true; const r = await call({ action: 'admin_import', rows: IMP, mode: $('impMode').value, lewatiError: $('impSkip').checked }, 60000);
+  if (!r.ok){ $('impInfo').innerHTML = '<div class="msg err">' + esc(r.msg || 'Gagal.') + (r.errors ? '<br>' + r.errors.map(esc).join('<br>') + (r.jumlahError > r.errors.length ? '<br>…' : '') : '') + '</div>'; $('impGo').disabled = false; return; }
+  say(r.diimpor + ' soal diimpor' + (r.dilewati ? ', ' + r.dilewati + ' dilewati' : '') + (r.kategoriBaru.length ? '. Kategori baru: ' + r.kategoriBaru.join(', ') + ' (bobot 0, atur di tab Bobot nilai)' : '') + '.', 'ok');
+  IMP = []; $('file').value = ''; $('impPrevBox').hidden = true; $('impInfo').innerHTML = ''; await boot(); tab('soal');
+};
+$('tpl').onclick = () => {
+  const k = (D && D.kat[0]) ? D.kat[0].kode : 'UMU';
+  const rows = [['Kategori','Soal','Opsi A','Opsi B','Opsi C','Opsi D','Opsi E','Opsi F','Skor A','Skor B','Skor C','Skor D','Skor E','Skor F','Tipe','Urutan Tetap','Batas Waktu (dtk)','Catatan'],
+    [k,'Ibu kota Indonesia adalah ...','Bandung','Jakarta','Surabaya','Medan','','',0,1,0,0,0,0,'Satu benar','Tidak',30,'contoh pilihan tunggal'],
+    [k,'Kamu menemukan dompet di kampus. Tindakanmu ...','Mengambil isinya','Menyerahkan ke petugas keamanan','Membiarkannya','Menyimpannya','','',0,3,1,0,0,0,'Skala','Tidak',60,'contoh soal situasional berskor']];
+  const csv = '﻿' + rows.map(r => r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')).join('\r\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })); a.download = 'template_soal.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+};
+
+/* ---------- waktu ---------- */
+const toLocal = iso => { if (!iso) return ''; const t = Date.parse(iso); if (isNaN(t)) return ''; return new Date(t + 8 * 3600e3).toISOString().slice(0, 16); };
+const fromLocal = v => v ? v + ':00+08:00' : '';
+function renderSet(){
+  const s = D.set || {};
+  $('s_durasi').value = s.DURASI_MENIT || (D.cfg && D.cfg.durasi) || ''; $('s_lim').value = s.BATAS_SOAL_DEFAULT_DTK || 60;
+  $('s_open').value = toLocal(s.OPEN_AT || (D.cfg && D.cfg.open)); $('s_until').value = toLocal(s.START_UNTIL || (D.cfg && D.cfg.until));
+  $('s_acakS').value = String(s.ACAK_SOAL || 'YA').toUpperCase() === 'TIDAK' ? 'TIDAK' : 'YA'; $('s_acakO').value = String(s.ACAK_OPSI || 'YA').toUpperCase() === 'TIDAK' ? 'TIDAK' : 'YA';
+  $('s_bank').value = String(s.BANK_SERVER || 'TIDAK').toUpperCase() === 'YA' ? 'YA' : 'TIDAK'; $('s_umum').value = s.PENGUMUMAN_TPU || '';
+  $('cfgNow').textContent = 'Aktif sekarang: ' + ((D.cfg && D.cfg.durasi) || '?') + ' menit';
+}
+$('saveSet').onclick = async () => {
+  $('saveSet').disabled = true;
+  const r = await call({ action: 'admin_save_settings', set: { DURASI_MENIT: $('s_durasi').value, BATAS_SOAL_DEFAULT_DTK: $('s_lim').value, OPEN_AT: fromLocal($('s_open').value), START_UNTIL: fromLocal($('s_until').value), ACAK_SOAL: $('s_acakS').value, ACAK_OPSI: $('s_acakO').value, BANK_SERVER: $('s_bank').value, PENGUMUMAN_TPU: $('s_umum').value } });
+  $('saveSet').disabled = false; say(r.ok ? 'Pengaturan disimpan.' : r.msg, r.ok ? 'ok' : 'err'); if (r.ok) await boot();
+};
+
+/* ---------- bobot ---------- */
+let KAT = [];
+function renderKat(){
+  KAT = D.kat.map(k => Object.assign({}, k));
+  const cnt = {}; D.bank.forEach(x => { if (x.aktif) cnt[x.kat] = (cnt[x.kat] || 0) + 1; });
+  $('katBody').innerHTML = KAT.map((k, i) => '<tr><td><input data-i="' + i + '" data-f="kode" value="' + esc(k.kode) + '" maxlength="6" style="width:90px"></td><td><input data-i="' + i + '" data-f="nama" value="' + esc(k.nama) + '"></td><td><input data-i="' + i + '" data-f="bobot" type="number" min="0" max="100" step="0.5" value="' + k.bobot + '" style="width:100px"></td><td>' + (cnt[k.kode] || 0) + '</td><td><button class="d" data-del="' + i + '">Hapus</button></td></tr>').join('');
+  tot();
+}
+function tot(){ const t = KAT.reduce((a, k) => a + (Number(k.bobot) || 0), 0), r = Math.round(t * 100) / 100; $('katTot').textContent = 'Total: ' + r + '%'; $('katTot').className = 'total ' + (Math.abs(r - 100) < 0.01 ? 'good' : 'bad'); }
+$('katBody').oninput = e => { const i = e.target.dataset.i; if (i == null) return; KAT[i][e.target.dataset.f] = e.target.value; if (e.target.dataset.f === 'bobot') tot(); };
+$('katBody').onclick = e => { const b = e.target.closest('button[data-del]'); if (!b) return; KAT.splice(+b.dataset.del, 1); drawKat(); };
+function drawKat(){ const cnt = {}; D.bank.forEach(x => { if (x.aktif) cnt[x.kat] = (cnt[x.kat] || 0) + 1; }); $('katBody').innerHTML = KAT.map((k, i) => '<tr><td><input data-i="' + i + '" data-f="kode" value="' + esc(k.kode) + '" maxlength="6" style="width:90px"></td><td><input data-i="' + i + '" data-f="nama" value="' + esc(k.nama) + '"></td><td><input data-i="' + i + '" data-f="bobot" type="number" min="0" max="100" step="0.5" value="' + k.bobot + '" style="width:100px"></td><td>' + (cnt[k.kode] || 0) + '</td><td><button class="d" data-del="' + i + '">Hapus</button></td></tr>').join(''); tot(); }
+$('katAdd').onclick = () => { KAT.push({ kode: '', nama: '', bobot: 0 }); drawKat(); };
+$('katEq').onclick = () => { if (!KAT.length) return; const v = Math.floor(10000 / KAT.length) / 100; KAT.forEach(k => k.bobot = v); KAT[0].bobot = Math.round((100 - v * (KAT.length - 1)) * 100) / 100; drawKat(); };
+$('katSave').onclick = async () => {
+  $('katSave').disabled = true; const r = await call({ action: 'admin_save_weights', kat: KAT.map(k => ({ kode: k.kode, nama: k.nama, bobot: Number(k.bobot) })) }); $('katSave').disabled = false;
+  say(r.ok ? 'Bobot disimpan.' : r.msg, r.ok ? 'ok' : 'err'); if (r.ok) await boot();
+};
+
+/* ---------- hasil ---------- */
+$('hLoad').onclick = async () => {
+  $('hLoad').disabled = true; $('hInfo').textContent = 'Menghitung…';
+  const r = await call({ action: 'admin_results' }, 90000); $('hLoad').disabled = false;
+  if (!r.ok){ $('hInfo').textContent = ''; say(r.msg, 'err'); return; }
+  H = r; $('hCsv').disabled = $('hSheet').disabled = false;
+  $('hInfo').textContent = r.rows.length + ' peserta · ' + r.totalSoal + ' soal aktif';
+  $('hHead').innerHTML = '<tr><th>#</th><th>NIM</th><th>Nama</th><th>Status</th><th>Terjawab</th><th>Tab-out</th><th>Nilai</th>' + r.kat.map(k => '<th>' + esc(k.kode) + '</th>').join('') + '</tr>';
+  $('hBody').innerHTML = r.rows.map(x => '<tr><td>' + x.rank + '</td><td>' + esc(x.nim) + '</td><td>' + esc(x.nama) + '</td><td>' + esc(x.status) + '</td><td>' + x.terjawab + '/' + r.totalSoal + '</td><td>' + x.tabout + '</td><td><b>' + x.nilai + '</b></td>' + r.kat.map(k => '<td>' + (x.per[k.kode] == null ? '' : x.per[k.kode]) + '</td>').join('') + '</tr>').join('');
+};
+$('hCsv').onclick = () => {
+  if (!H) return; const head = ['Peringkat','NIM','Nama','Status','Terjawab','Tab-out','Nilai akhir'].concat(H.kat.map(k => k.nama));
+  const rows = [head].concat(H.rows.map(x => [x.rank, x.nim, x.nama, x.status, x.terjawab, x.tabout, x.nilai].concat(H.kat.map(k => x.per[k.kode]))));
+  const csv = '﻿' + rows.map(r => r.map(c => '"' + String(c == null ? '' : c).replace(/"/g, '""') + '"').join(',')).join('\r\n');
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' })); a.download = 'hasil_tes.csv'; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+};
+$('hSheet').onclick = async () => { const r = await call({ action: 'admin_write_results' }, 90000); say(r.ok ? r.baris + ' baris ditulis ke sheet Hasil_Nilai.' : r.msg, r.ok ? 'ok' : 'err'); };
+const modeUI = () => { const m = $('a_mode').value; $('a_nimBox').hidden = m !== 'daftar'; $('a_valBox').hidden = m === 'daftar'; $('a_valL').textContent = m === 'topn' ? 'Jumlah peringkat teratas' : 'Nilai minimal'; $('aGo').disabled = true; };
+$('a_mode').onchange = modeUI; $('a_val').oninput = $('a_nim').oninput = $('a_semua').onchange = () => { $('aGo').disabled = true; };
+function applyReq(dry){ const m = $('a_mode').value, q = { action: 'admin_apply_hasil', mode: m, dry, semua: $('a_semua').checked }; if (m === 'daftar') q.nim = $('a_nim').value.split(/[\s,;]+/).filter(Boolean); else q.nilai = $('a_val').value; return q; }
+$('aDry').onclick = async () => { $('aDry').disabled = true; const r = await call(applyReq(true), 90000); $('aDry').disabled = false; if (!r.ok){ say(r.msg, 'err', 'aInfo'); $('aGo').disabled = true; return; } say('PRATINJAU: ' + r.lulus + ' Lulus · ' + r.tidakLulus + ' Tidak Lulus · ' + r.dikosongkan + ' dikosongkan. Belum ditulis.', '', 'aInfo'); $('aGo').disabled = false; };
+$('aGo').onclick = async () => { if (!confirm('Tulis hasil Lulus/Tidak Lulus ke sheet Pendaftar_TPU? Hasil langsung terlihat peserta di Cek Status bila waktu pengumuman sudah lewat.')) return; $('aGo').disabled = true; const r = await call(applyReq(false), 90000); say(r.ok ? 'Tersimpan: ' + r.lulus + ' Lulus · ' + r.tidakLulus + ' Tidak Lulus.' : r.msg, r.ok ? 'ok' : 'err', 'aInfo'); };
+
+/* ---------- init ---------- */
+(async () => { if (AT){ await boot(); if (!D) toLogin(''); } else toLogin(''); })();
+})();
+</script>
+</body>
+</html>
