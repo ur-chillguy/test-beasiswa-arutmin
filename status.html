@@ -396,7 +396,7 @@ function kvRows(d, skip){ return ['nama', 'nim', 'tempat', 'lahir', 'univ', 'fak
 $('fCek').addEventListener('submit', async e => {
   e.preventDefault(); err('cekErr', '');
   const nama = $('c_nama').value.replace(/\s+/g, ' ').trim(), nim = normNIM($('c_nim').value), hp = normHP($('c_hp').value);
-  let ok = bad('c_nama', nama.length < 2) & bad('c_nim', !/^[A-Z0-9][A-Z0-9.\-\/]{4,24}$/.test(nim)) & bad('c_hp', !/^08\d{8,12}$/.test(hp));
+  let ok = bad('c_nama', nama.length < 2) & bad('c_nim', !/^[A-Z0-9][A-Z0-9.\-\/]{4,24}$/.test(nim)) & bad('c_hp', !/^0\d{9,12}$/.test(hp));
   if (!ok) return;
   $('cekGo').disabled = true; overlay('Mencari data…', '', true);
   try {
@@ -492,7 +492,7 @@ $('waGo').addEventListener('click', async () => {
     let v = inp.value.replace(/\s+/g, ' ').trim();
     if (f === 'lahir' && v) v = human(v);
     if (f === 'hp') v = normHP(v);
-    const fine = f === 'hp' ? /^08\d{8,12}$/.test(v) : v.length >= (f === 'fak' ? 1 : 2);
+    const fine = f === 'hp' ? /^0\d{9,12}$/.test(v) : v.length >= (f === 'fak' ? 1 : 2);
     it.querySelector('.field').classList.toggle('bad', !fine); if (!fine) ok = false;
     items.push({ f, v });
   });
