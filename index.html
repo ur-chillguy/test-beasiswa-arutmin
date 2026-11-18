@@ -1308,7 +1308,7 @@ async function init(){
   api({ action: 'ping' }, 10000).then(r => {
     if (!r) return; /* kode akses tidak dipakai lagi: masuk lewat Nomor Peserta */
     if (r.duration) setDur(r.duration);
-    if (r.openText) banner('Jadwal: tes dapat dimulai mulai ' + r.openText + (r.untilText ? ' sampai ' + r.untilText : '') + '.', 'ok');
+    /* banner jadwal global dihapus: peserta Politala berjadwal bebas; penolakan di luar jadwal tetap dari server */
   }).catch(() => {});
 }
 init();
