@@ -158,6 +158,13 @@ main{max-width:820px;margin:0 auto;padding:18px 16px 120px}
 .result{text-align:center;padding:30px 22px}
 .result .big{font-size:1.9rem;font-weight:800;margin:6px 0 10px}
 .result.lulus .big{color:var(--ok)}
+.es textarea{width:100%;min-height:340px;font:inherit;line-height:1.55;padding:12px 13px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);resize:vertical}
+.es textarea:focus{outline:2px solid var(--ok);outline-offset:1px}
+.es .cnt{display:flex;justify-content:space-between;gap:10px;font-size:.88rem;color:var(--muted);margin:6px 0 14px}
+.es .cnt b.kurang{color:var(--danger)} .es .cnt b.cukup{color:var(--ok)}
+.es ul{margin:6px 0 12px;padding-left:20px} .es li{margin:3px 0}
+.es .stat{background:var(--soft);border-radius:10px;padding:10px 12px;font-size:.92rem;margin:0 0 14px}
+.es .stat.ok{background:#e6f4ea;color:var(--ok)}
 .note{background:var(--soft);border-radius:12px;padding:12px 14px;font-size:.95rem;margin:0 0 14px;white-space:pre-line}
 .row2{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
 .row2 .btn{flex:1;min-width:150px}
@@ -296,6 +303,24 @@ a.btn{display:inline-flex;align-items:center;justify-content:center;text-decorat
       <div class="big" id="hsBig"></div>
       <p id="hsTxt"></p>
     </div>
+    <div class="card es" id="esCard" hidden>
+      <h2>Esai Pra-Wawancara</h2>
+      <p>Tulis esai langsung di bawah ini sebelum <b id="esBatas"></b>. Esaimu akan dibahas saat wawancara.</p>
+      <p><b>Topik:</b> <span id="esTopik"></span></p>
+      <p class="muted" style="margin-bottom:2px">Yang perlu kamu ceritakan:</p>
+      <ul class="muted">
+        <li>Tujuanmu setelah lulus dan alasan memilih jurusanmu.</li>
+        <li>Rencana akademik dan organisasi dari semester ke semester.</li>
+        <li>Tantangan terbesar yang kamu perkirakan dan cara menghadapinya.</li>
+        <li>Kontribusi nyata yang ingin kamu berikan untuk desa atau daerahmu.</li>
+      </ul>
+      <div class="stat" id="esStat" hidden></div>
+      <label class="sr" for="esTeks">Isi esai</label>
+      <textarea id="esTeks" placeholder="Mulai menulis esaimu di sini…"></textarea>
+      <div class="cnt"><span>Minimal <span id="esMin"></span> karakter</span><b id="esCnt">0</b></div>
+      <p class="muted" style="font-size:.86rem">Draf tersimpan otomatis di perangkat ini. Kamu boleh mengirim ulang untuk memperbaiki esai selama belum lewat batas waktu; yang dinilai versi terakhir.</p>
+      <button class="btn primary" id="esKirim" type="button">Kirim Esai</button>
+    </div>
     <p style="text-align:center"><button class="linkbtn" id="hsBack">Kembali</button></p>
   </section>
 </main>
@@ -373,6 +398,13 @@ function demoApi(p){
       db.nim = n; save(); return res(view());
     }
     if (p.action === 'koreksi') return res({ ok: true });
+    if (p.action === 'esai'){
+      const E = 'arutmin_esai_demo_srv'; let e; try { e = JSON.parse(localStorage.getItem(E)); } catch(x){}
+      const inf = () => ({ ok: true, topik: 'Rencana kuliahku selama empat tahun ke depan dan kontribusi yang ingin aku berikan untuk desa atau daerahku.', min: 1500, max: 6000, batas: '25 November 2026 pukul 15.00 WITA', tutup: false, terkirim: e ? e.w : '', teks: e ? e.t : '', kali: e ? e.k : 0 });
+      if (p.mode !== 'kirim') return res(inf());
+      if (String(p.teks).length < 1500) return res({ ok: false, err: 'ESAI_PENDEK', msg: 'Esai minimal 1500 karakter.' });
+      e = { w: new Date().toLocaleString('id-ID'), t: p.teks, k: (e ? e.k : 0) + 1 }; localStorage.setItem(E, JSON.stringify(e)); return res(inf());
+    }
     res({ ok: false, err: 'BAD_REQUEST' });
   }, 250));
 }
@@ -580,11 +612,11 @@ async function sendNim(nim, fm, fld){
 function jadwalWawancara(univ){
   const u = String(univ || '').toLowerCase();
   let j = null;
-  if (/lambung|\bulm\b/.test(u)) j = { hari: 'Kamis, 26 November 2026', jam: '09.00 WITA', tempat: 'Universitas Lambung Mangkurat' };
+  if (/lambung|\bulm\b/.test(u)) j = { hari: 'Kamis, 26 November 2026', jam: '09.00 WITA', tempat: 'Gedung CDC ULM Lantai 2, Universitas Lambung Mangkurat', maps: 'https://maps.app.goo.gl/DyYxwxSupqn4x1UGA' };
   else if (/tanah laut|politala/.test(u)) j = { hari: 'Senin, 23 November 2026', jam: '14.00 WITA', tempat: 'Politeknik Negeri Tanah Laut' };
   else if (/kemenkes|poltekkes|islam negeri|uin\b|antasari/.test(u)) j = { hari: 'Senin, 23 November 2026', jam: '09.00 WITA', tempat: 'Kantor Arutmin Banjarbaru' };
   if (!j) return ' Jadwal dan tempat wawancara akan diinformasikan kemudian di grup WhatsApp peserta.';
-  return '<br><br><b>Jadwal Tes Wawancara</b><br>Hari/tanggal: <b>' + j.hari + '</b><br>Mulai pukul: <b>' + j.jam + '</b><br>Tempat: <b>' + j.tempat + '</b><br><br>Mohon hadir tepat waktu. Informasi tambahan akan disampaikan di grup WhatsApp peserta.';
+  return '<br><br><b>Jadwal Tes Wawancara</b><br>Hari/tanggal: <b>' + j.hari + '</b><br>Mulai pukul: <b>' + j.jam + '</b><br>Tempat: <b>' + j.tempat + '</b>' + (j.maps ? '<br>Lokasi: <a href="' + j.maps + '" target="_blank" rel="noopener">Buka di Google Maps</a>' : '') + '<br><br>Mohon hadir tepat waktu. Informasi tambahan akan disampaikan di grup WhatsApp peserta.';
 }
 function showHasil(r){
   const c = $('hsCard'); c.className = 'card result' + (r.hasil === 'LULUS' ? ' lulus' : '');
@@ -599,8 +631,58 @@ function showHasil(r){
     $('hsBig').textContent = 'Belum tersedia';
     $('hsTxt').innerHTML = 'Hasil tesmu belum tersedia. Hubungi panitia untuk informasi lebih lanjut.';
   }
+  $('esCard').hidden = true;
+  if (r.hasil === 'LULUS' && /lambung|\bulm\b/i.test(String(r.d.univ || ''))) esaiMuat(r);
   show('hasil');
 }
+
+/* ---------- 6. esai pra-wawancara ---------- */
+const ES = { min: 1500, max: 6000, tutup: false, key: '' };
+const esNorm = t => String(t || '').replace(/\r\n?/g, '\n').replace(/[ \t\u00a0]+/g, ' ').replace(/ *\n */g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+function esHitung(){
+  const n = esNorm($('esTeks').value).length, b = $('esCnt');
+  b.textContent = n.toLocaleString('id-ID') + ' karakter' + (n < ES.min ? ' (kurang ' + (ES.min - n).toLocaleString('id-ID') + ')' : '');
+  b.className = n < ES.min || n > ES.max ? 'kurang' : 'cukup';
+  try { if (ES.key) localStorage.setItem(ES.key, $('esTeks').value); } catch(e){}
+}
+function esStatus(r){
+  const st = $('esStat');
+  if (r.terkirim){ st.className = 'stat ok'; st.textContent = 'Esai sudah terkirim (' + r.terkirim + ' WITA, ' + r.kali + 'x kirim). ' + (r.tutup ? 'Batas waktu sudah lewat.' : 'Kamu masih bisa memperbaikinya sebelum batas waktu.'); st.hidden = false; }
+  else if (r.tutup){ st.className = 'stat'; st.textContent = 'Batas pengiriman esai sudah lewat dan kamu belum mengirim esai.'; st.hidden = false; }
+  else st.hidden = true;
+  $('esTeks').disabled = $('esKirim').disabled = !!r.tutup;
+}
+async function esaiMuat(r){
+  ES.key = 'arutmin_esai_' + (r.nomor || r.d.nim);
+  $('esCard').hidden = false;
+  let draft = ''; try { draft = localStorage.getItem(ES.key) || ''; } catch(e){}
+  try {
+    const x = await api({ action: 'esai', k: V.k, mode: 'lihat' });
+    if (!x.ok){ if (x.err === 'ESAI_TIDAK') $('esCard').hidden = true; return; }
+    Object.assign(ES, { min: x.min, max: x.max, tutup: x.tutup });
+    $('esTopik').textContent = x.topik; $('esBatas').textContent = x.batas; $('esMin').textContent = x.min.toLocaleString('id-ID');
+    $('esTeks').maxLength = x.max + 500;
+    $('esTeks').value = draft && draft.length >= (x.teks || '').length ? draft : (x.teks || draft);
+    esStatus(x); esHitung();
+  } catch(e){ $('esStat').className = 'stat'; $('esStat').textContent = NET; $('esStat').hidden = false; }
+}
+$('esTeks').addEventListener('input', esHitung);
+$('esKirim').addEventListener('click', async () => {
+  const t = esNorm($('esTeks').value);
+  if (t.length < ES.min){ banner('Esai minimal ' + ES.min.toLocaleString('id-ID') + ' karakter. Saat ini ' + t.length.toLocaleString('id-ID') + '.', 'err', 8000); return; }
+  if (t.length > ES.max){ banner('Esai maksimal ' + ES.max.toLocaleString('id-ID') + ' karakter.', 'err', 8000); return; }
+  $('esKirim').disabled = true; overlay('Mengirim esai…', '', true);
+  try {
+    const x = await api({ action: 'esai', k: V.k, mode: 'kirim', teks: t }, 30000);
+    overlayOff();
+    if (!x.ok){
+      if (x.err === 'SESI'){ banner('Sesi berakhir. Drafmu aman tersimpan di perangkat ini. Cek status lagi, lalu kirim ulang.', 'err', 12000); show('cek'); return; }
+      banner(x.msg || 'Gagal mengirim esai.', 'err', 9000); return;
+    }
+    esStatus(x); banner('Esai terkirim. Terima kasih!', 'ok', 6000);
+  } catch(e){ overlayOff(); banner(NET + ' Drafmu tetap tersimpan.', 'err', 9000); }
+  finally { if (!ES.tutup) $('esKirim').disabled = false; }
+});
 $('hsBack').addEventListener('click', () => { V = null; show('cek'); });
 
 /* ---------- init ---------- */
