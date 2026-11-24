@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f5b45">
+<title>Absen Pembinaan — Beasiswa Arutmin Effort & Vokasi</title>
+<style>
+  :root{
+    --bg:#f4f1ea; --ink:#14202b; --mute:#5d6b76; --line:#e2ddd2; --card:#fff;
+    --pri:#0f5b45; --pri-d:#0a4333; --acc:#e8a13a; --ok:#1c8a5b; --bad:#c2402f; --warn:#b7791f;
+    --r:18px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0}
+  body{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.45;min-height:100vh;padding-bottom:env(safe-area-inset-bottom)}
+  .hero{background:var(--pri);color:#fff;padding:28px 20px 70px;position:relative;overflow:hidden}
+  .hero svg.contour{position:absolute;inset:0;width:100%;height:100%;opacity:.16}
+  .hero .in{max-width:560px;margin:0 auto;position:relative}
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.8;font-weight:600}
+  h1{font-size:26px;line-height:1.15;margin:6px 0 0;font-weight:800;letter-spacing:-.01em}
+  main{max-width:560px;margin:-48px auto 0;padding:0 16px 40px;position:relative}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:14px}
+  .sess{display:grid;gap:10px}
+  .sess .row{display:flex;gap:10px;align-items:flex-start}
+  .ico{flex:0 0 34px;height:34px;border-radius:10px;background:#e8f1ed;color:var(--pri);display:grid;place-items:center}
+  .ico svg{width:18px;height:18px}
+  .lbl{font-size:12px;color:var(--mute);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+  .val{font-weight:700}
+  .badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px}
+  .badge.on{background:#e3f4ec;color:var(--ok)} .badge.off{background:#fbe9e6;color:var(--bad)}
+  .badge i{width:7px;height:7px;border-radius:50%;background:currentColor;display:inline-block}
+  .step{display:flex;align-items:center;gap:10px;margin:0 0 14px}
+  .step b{width:26px;height:26px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:13px}
+  .step.done b{background:var(--ok)}
+  .step h2{margin:0;font-size:16px}
+  label{display:block;font-size:13px;font-weight:700;margin:12px 0 6px}
+  input,select{width:100%;font:inherit;padding:13px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);outline:none}
+  input:focus,select:focus{border-color:var(--pri);box-shadow:0 0 0 3px #0f5b4522}
+  .hint{font-size:12px;color:var(--mute);margin-top:5px}
+  button{font:inherit;cursor:pointer;border:0;border-radius:14px;padding:14px 16px;font-weight:800;width:100%}
+  .btn-pri{background:var(--pri);color:#fff} .btn-pri:hover{background:var(--pri-d)}
+  .btn-sec{background:#e8f1ed;color:var(--pri)}
+  .btn-ghost{background:transparent;color:var(--mute);border:1.5px solid var(--line)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  .radar{display:grid;grid-template-columns:130px 1fr;gap:14px;align-items:center;margin-top:12px}
+  .radar svg{width:130px;height:130px}
+  .chip{display:inline-block;font-weight:800;font-size:13px;padding:5px 11px;border-radius:99px}
+  .chip.ok{background:#e3f4ec;color:var(--ok)} .chip.bad{background:#fbe9e6;color:var(--bad)} .chip.wait{background:#fbf1de;color:var(--warn)}
+  .stat{font-size:13px;color:var(--mute);margin-top:6px}
+  .stat b{color:var(--ink)}
+  .cam{position:relative;border-radius:14px;overflow:hidden;background:#0d1419;aspect-ratio:3/4;display:grid;place-items:center}
+  .cam video,.cam img{width:100%;height:100%;object-fit:cover}
+  .cam video{transform:scaleX(-1)}
+  .cam .ph{color:#9db0bd;font-size:13px;text-align:center;padding:20px}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  .msg{border-radius:12px;padding:12px 14px;font-size:14px;font-weight:600;margin-top:12px}
+  .msg.err{background:#fbe9e6;color:var(--bad)} .msg.ok{background:#e3f4ec;color:var(--ok)}
+  .success{text-align:center;padding:30px 18px}
+  .success .tick{width:72px;height:72px;border-radius:50%;background:var(--ok);margin:0 auto 14px;display:grid;place-items:center}
+  .success .tick svg{width:38px;height:38px;stroke:#fff}
+  footer{text-align:center;font-size:12px;color:var(--mute);padding:6px 0 30px}
+  footer a{color:var(--mute)}
+  .hidden{display:none!important}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  td,th{padding:7px 4px;border-bottom:1px solid var(--line);text-align:left}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (prefers-reduced-motion:no-preference){ .card{animation:up .35s ease both} @keyframes up{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}} }
+</style>
+</head>
+<body>
+<header class="hero">
+  <svg class="contour" viewBox="0 0 400 220" preserveAspectRatio="xMidYMid slice" fill="none" stroke="#fff" stroke-width="1.2">
+    <path d="M-20 170 C60 120 120 190 200 140 S340 90 430 130"/><path d="M-20 150 C60 100 120 170 200 120 S340 70 430 110"/>
+    <path d="M-20 130 C60 80 120 150 200 100 S340 50 430 90"/><path d="M-20 110 C60 60 120 130 200 80 S340 30 430 70"/>
+    <path d="M-20 190 C60 140 120 210 200 160 S340 110 430 150"/><path d="M-20 210 C60 160 120 230 200 180 S340 130 430 170"/>
+  </svg>
+  <div class="in">
+    <div class="eyebrow">PT Arutmin Indonesia · Effort Future Leaders</div>
+    <h1>Absen Pembinaan<br>Beasiswa Effort &amp; Vokasi</h1>
+  </div>
+</header>
+
+<main>
+  <!-- ===== PESERTA ===== -->
+  <div id="viewPeserta">
+    <section class="card sess" id="sessCard">
+      <div class="lbl">Memuat sesi…</div>
+    </section>
+
+    <div id="formWrap" class="hidden">
+      <section class="card" id="c1">
+        <div class="step" id="s1"><b>1</b><h2>Data diri</h2></div>
+        <label for="nim">NIM</label>
+        <input id="nim" inputmode="text" autocomplete="off" autocapitalize="characters" placeholder="mis. 2110816110010">
+        <div class="hint" id="nimHint">Nama, jurusan, dan kampus terisi otomatis kalau NIM sudah pernah tercatat.</div>
+        <label for="nama">Nama lengkap</label>
+        <input id="nama" autocomplete="name" placeholder="Nama sesuai KTM">
+        <label for="jurusan">Jurusan</label>
+        <input id="jurusan" placeholder="mis. Teknik Mesin">
+        <label for="univ">Universitas / Perguruan Tinggi</label>
+        <select id="univ">
+          <option value="">Pilih kampus…</option>
+          <option>Universitas Lambung Mangkurat</option>
+          <option>Universitas Islam Negeri Antasari</option>
+          <option>Poltekkes Kemenkes Banjarmasin</option>
+          <option>Politeknik Negeri Tanah Laut</option>
+        </select>
+      </section>
+
+      <section class="card" id="c2">
+        <div class="step" id="s2"><b>2</b><h2>Validasi lokasi</h2></div>
+        <div class="hint" style="margin-top:-6px">Aktifkan GPS dan izinkan akses lokasi. Kamu harus berada di titik pembinaan.</div>
+        <div class="radar">
+          <svg viewBox="0 0 200 200" id="radar" aria-label="Posisi kamu terhadap lokasi pembinaan">
+            <circle cx="100" cy="100" r="95" fill="#f4f1ea"/>
+            <circle cx="100" cy="100" r="70" fill="#e3f4ec" stroke="#1c8a5b" stroke-width="2" stroke-dasharray="5 4"/>
+            <circle cx="100" cy="100" r="35" fill="none" stroke="#1c8a5b33" stroke-width="1"/>
+            <path d="M100 82 a14 14 0 1 1 0.01 0z" fill="none"/>
+            <circle cx="100" cy="100" r="6" fill="#0f5b45"/>
+            <circle id="you" cx="100" cy="100" r="7" fill="#e8a13a" stroke="#fff" stroke-width="2.5" class="hidden"/>
+          </svg>
+          <div>
+            <span class="chip wait" id="locChip">Belum dicek</span>
+            <div class="stat" id="locStat"></div>
+          </div>
+        </div>
+        <div style="margin-top:12px"><button class="btn-sec" id="btnLoc">Cek lokasi saya</button></div>
+        <div id="locMsg"></div>
+      </section>
+
+      <section class="card" id="c3">
+        <div class="step" id="s3"><b>3</b><h2>Selfie kehadiran</h2></div>
+        <div class="cam" id="cam"><div class="ph">Kamera depan akan dibuka.<br>Foto diberi cap waktu &amp; koordinat otomatis.</div></div>
+        <div class="row2">
+          <button class="btn-sec" id="btnCam">Buka kamera</button>
+          <button class="btn-pri hidden" id="btnShot">Ambil foto</button>
+          <button class="btn-ghost hidden" id="btnRetake">Ulangi</button>
+        </div>
+        <div id="camMsg"></div>
+      </section>
+
+      <button class="btn-pri" id="btnSubmit" disabled style="padding:17px;font-size:16px">Kirim absen</button>
+      <div id="submitMsg"></div>
+    </div>
+
+    <section class="card success hidden" id="okCard">
+      <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+      <h2 style="margin:0 0 4px">Absen tercatat</h2>
+      <div id="okDetail" class="stat"></div>
+    </section>
+    <footer>Absen hanya satu kali per sesi · <a href="#admin">Admin</a></footer>
+  </div>
+
+  <!-- ===== ADMIN ===== -->
+  <div id="viewAdmin" class="hidden">
+    <section class="card" id="adLogin">
+      <div class="step"><b>🔒</b><h2>Masuk admin</h2></div>
+      <label for="pin">PIN admin</label>
+      <input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN dari tab Config di Sheets">
+      <div style="margin-top:12px"><button class="btn-pri" id="btnLogin">Masuk</button></div>
+      <div id="adMsg0"></div>
+    </section>
+
+    <div id="adPanel" class="hidden">
+      <section class="card">
+        <div class="step"><b>A</b><h2>Atur sesi pembinaan</h2></div>
+        <div id="adCurrent" class="stat"></div>
+        <label for="aMateri">Materi pembinaan</label><input id="aMateri">
+        <label for="aTanggal">Tanggal</label><input id="aTanggal" type="date">
+        <label for="aLokasi">Nama lokasi</label><input id="aLokasi" placeholder="mis. Nordu Coffee Kayutangi">
+        <div class="two">
+          <div><label for="aLat">Latitude</label><input id="aLat" inputmode="decimal"></div>
+          <div><label for="aLng">Longitude</label><input id="aLng" inputmode="decimal"></div>
+        </div>
+        <label for="aMaps">Tempel link Google Maps / “lat, lng” (opsional)</label>
+        <input id="aMaps" placeholder="https://www.google.com/maps/@-3.28,114.58,17z atau -3.2846, 114.5892">
+        <div class="hint">Link pendek (share.google / goo.gl) tidak bisa dibaca. Pakai tombol di bawah kalau sedang di lokasi.</div>
+        <div class="row2" style="grid-template-columns:1fr">
+          <button class="btn-sec" id="btnHere">Pakai lokasi saya sekarang</button>
+        </div>
+        <label for="aRadius">Radius valid (meter)</label><input id="aRadius" type="number" value="150" min="20" max="2000">
+        <div style="margin-top:14px" class="row2">
+          <button class="btn-pri" id="btnSave">Simpan &amp; buka absen</button>
+          <button class="btn-ghost" id="btnClose">Tutup absen</button>
+        </div>
+        <div id="adMsg"></div>
+      </section>
+      <section class="card">
+        <div class="step"><b>B</b><h2>Sudah absen di sesi ini</h2></div>
+        <div id="adRekap" class="stat">—</div>
+        <div style="margin-top:10px"><button class="btn-ghost" id="btnRefresh">Muat ulang</button></div>
+      </section>
+    </div>
+    <footer><a href="#">← Kembali ke halaman absen</a></footer>
+  </div>
+</main>
+
+<script>
+/* Ganti dengan URL Web App Apps Script setelah deploy */
+const API_URL = 'https://script.google.com/macros/s/AKfycbxxaYQwCa1xjEjoSRCRFJUmcalBCsqwMN6mfeuMZuyUNpODcz1gG86jU0GiB03bWArTcw/exec';
+
+const $ = s => document.querySelector(s);
+const st = { session:null, loc:null, selfie:null, stream:null, pin:'' };
+
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtDate = iso => { try { return new Date(iso+'T00:00:00').toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'}); } catch(e){ return iso; } };
+const msg = (el, text, kind) => { $(el).innerHTML = text ? `<div class="msg ${kind||'err'}">${esc(text)}</div>` : ''; };
+
+async function apiGet(p){ const r = await fetch(API_URL+'?'+new URLSearchParams(p)); return r.json(); }
+async function apiPost(b){
+  const r = await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(b)});
+  return r.json();
+}
+function dist(a,b,c,d){ const R=6371000,k=Math.PI/180,x=(c-a)*k,y=(d-b)*k;
+  const h=Math.sin(x/2)**2+Math.cos(a*k)*Math.cos(c*k)*Math.sin(y/2)**2; return 2*R*Math.asin(Math.sqrt(h)); }
+
+/* ---------- Routing ---------- */
+function route(){
+  const admin = location.hash === '#admin';
+  $('#viewAdmin').classList.toggle('hidden', !admin);
+  $('#viewPeserta').classList.toggle('hidden', admin);
+}
+addEventListener('hashchange', route); route();
+
+/* ---------- Sesi ---------- */
+const I = {
+  cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>',
+  book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5a2 2 0 012-2h12v16H6a2 2 0 00-2 2zM4 19a2 2 0 012-2h12"/></svg>',
+  pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21s7-6.2 7-11.5A7 7 0 005 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>'
+};
+async function loadSession(){
+  try{
+    const r = await apiGet({action:'session'});
+    st.session = r.session;
+  }catch(e){ $('#sessCard').innerHTML = '<div class="msg err">Gagal memuat sesi. Cek koneksi lalu muat ulang.</div>'; return; }
+  const s = st.session;
+  if(!s){ $('#sessCard').innerHTML = '<div class="msg err">Belum ada sesi pembinaan.</div>'; return; }
+  $('#sessCard').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div class="lbl">Sesi pembinaan</div>
+      <span class="badge ${s.aktif?'on':'off'}"><i></i>${s.aktif?'Absen dibuka':'Absen ditutup'}</span>
+    </div>
+    <div class="row"><div class="ico">${I.book}</div><div><div class="lbl">Materi</div><div class="val">${esc(s.materi)}</div></div></div>
+    <div class="row"><div class="ico">${I.cal}</div><div><div class="lbl">Tanggal</div><div class="val">${esc(fmtDate(s.tanggal))}</div></div></div>
+    <div class="row"><div class="ico">${I.pin}</div><div><div class="lbl">Lokasi</div><div class="val">${esc(s.lokasi)}</div><div class="hint" style="margin:0">Radius valid ${s.radius} m</div></div></div>`;
+  $('#formWrap').classList.toggle('hidden', !s.aktif);
+  if(localStorage.getItem('absen_'+s.id)) showSuccess(JSON.parse(localStorage.getItem('absen_'+s.id)));
+}
+
+/* ---------- Autofill NIM ---------- */
+let lookupT;
+$('#nim').addEventListener('input', e=>{
+  clearTimeout(lookupT); refresh();
+  const v = e.target.value.trim();
+  if(v.length < 6) return;
+  lookupT = setTimeout(async ()=>{
+    try{
+      const r = await apiGet({action:'lookup', nim:v});
+      if(r.data){
+        if(!$('#nama').value) $('#nama').value = r.data.nama || '';
+        if(!$('#jurusan').value) $('#jurusan').value = r.data.jurusan || '';
+        const opt=[...$('#univ').options].find(o=>o.value===r.data.univ); if(opt && !$('#univ').value) $('#univ').value=opt.value;
+        $('#nimHint').textContent = 'Data ditemukan — silakan cek, bisa diubah.'; refresh();
+      }
+    }catch(e){}
+  }, 500);
+});
+['nama','jurusan','univ'].forEach(i=>$('#'+i).addEventListener('input',refresh));
+
+/* ---------- Lokasi ---------- */
+function getBestPosition(onTick){
+  return new Promise((resolve,reject)=>{
+    if(!navigator.geolocation) return reject(new Error('Browser tidak mendukung GPS.'));
+    let best=null, id, done=false;
+    const finish=()=>{ if(done) return; done=true; navigator.geolocation.clearWatch(id); best?resolve(best):reject(new Error('Lokasi tidak terbaca.')); };
+    id = navigator.geolocation.watchPosition(p=>{
+      if(!best || p.coords.accuracy < best.coords.accuracy) best=p;
+      onTick && onTick(p);
+      if(p.coords.accuracy <= 25) finish();
+    }, err=>{ if(!best){ done=true; navigator.geolocation.clearWatch(id); reject(err); } },
+    {enableHighAccuracy:true, timeout:20000, maximumAge:0});
+    setTimeout(finish, 10000);
+  });
+}
+function drawYou(east, north, radius){
+  const R=70; let dx=east/radius*R, dy=-north/radius*R; const m=Math.hypot(dx,dy), cap=92;
+  if(m>cap){ dx*=cap/m; dy*=cap/m; }
+  const y=$('#you'); y.classList.remove('hidden'); y.setAttribute('cx',100+dx); y.setAttribute('cy',100+dy);
+}
+function evaluate(pos, s){
+  const {latitude:lat, longitude:lng, accuracy:acc} = pos.coords;
+  const d = dist(lat,lng,s.lat,s.lng);
+  const east=(lng-s.lng)*111320*Math.cos(s.lat*Math.PI/180), north=(lat-s.lat)*110574;
+  drawYou(east,north,s.radius);
+  const ok = d <= s.radius && acc <= 150;
+  return {lat,lng,acc,d,ok};
+}
+$('#btnLoc').addEventListener('click', async ()=>{
+  const s = st.session; if(!s) return;
+  const b=$('#btnLoc'); b.disabled=true; b.textContent='Membaca GPS…'; msg('#locMsg','');
+  $('#locChip').className='chip wait'; $('#locChip').textContent='Mengukur…';
+  try{
+    const pos = await getBestPosition(p=>{ const e=evaluate(p,s); $('#locStat').innerHTML=`Akurasi ±<b>${Math.round(e.acc)} m</b>`; });
+    const e = evaluate(pos,s); st.loc = e.ok ? e : null;
+    $('#locChip').className = 'chip '+(e.ok?'ok':'bad');
+    $('#locChip').textContent = e.ok ? 'Di lokasi pembinaan' : 'Di luar lokasi';
+    $('#locStat').innerHTML = `Jarak ke lokasi <b>${Math.round(e.d)} m</b> · maks ${s.radius} m<br>Akurasi GPS ±${Math.round(e.acc)} m`;
+    if(!e.ok){ msg('#locMsg', e.acc>150 ? 'Akurasi GPS terlalu rendah. Pindah ke area terbuka lalu cek lagi.' : `Kamu ${Math.round(e.d)} m dari lokasi. Datangi titik pembinaan lalu cek lagi.`); }
+  }catch(err){
+    st.loc=null; $('#locChip').className='chip bad'; $('#locChip').textContent='Gagal';
+    msg('#locMsg', err.code===1 ? 'Izin lokasi ditolak. Aktifkan izin lokasi untuk situs ini di pengaturan browser.' : (err.message||'Lokasi tidak terbaca.'));
+  }
+  b.disabled=false; b.textContent='Cek lagi'; refresh();
+});
+
+/* ---------- Kamera ---------- */
+async function openCam(){
+  msg('#camMsg','');
+  try{
+    st.stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:960},height:{ideal:1280}},audio:false});
+    $('#cam').innerHTML = '<video id="vid" playsinline muted autoplay></video>';
+    $('#vid').srcObject = st.stream;
+    $('#btnCam').classList.add('hidden'); $('#btnShot').classList.remove('hidden');
+  }catch(e){ msg('#camMsg','Kamera tidak bisa dibuka. Izinkan akses kamera untuk situs ini.'); }
+}
+function stopCam(){ if(st.stream){ st.stream.getTracks().forEach(t=>t.stop()); st.stream=null; } }
+$('#btnCam').addEventListener('click', openCam);
+$('#btnShot').addEventListener('click', ()=>{
+  const v=$('#vid'); if(!v||!v.videoWidth) return;
+  const W=720, H=Math.round(W*v.videoHeight/v.videoWidth);
+  const c=document.createElement('canvas'); c.width=W; c.height=H; const g=c.getContext('2d');
+  g.drawImage(v,0,0,W,H);
+  const now=new Date().toLocaleString('id-ID',{dateStyle:'medium',timeStyle:'medium'});
+  const l1=`${$('#nama').value.trim()} · ${$('#nim').value.trim()}`;
+  const l2=`${now}${st.loc?` · ${st.loc.lat.toFixed(5)}, ${st.loc.lng.toFixed(5)}`:''}`;
+  g.fillStyle='rgba(0,0,0,.55)'; g.fillRect(0,H-74,W,74);
+  g.fillStyle='#fff'; g.font='600 24px sans-serif'; g.fillText(l1,16,H-42); g.font='20px sans-serif'; g.fillText(l2,16,H-14);
+  st.selfie = c.toDataURL('image/jpeg',0.72);
+  $('#cam').innerHTML = `<img src="${st.selfie}" alt="Selfie">`;
+  stopCam(); $('#btnShot').classList.add('hidden'); $('#btnRetake').classList.remove('hidden'); refresh();
+});
+$('#btnRetake').addEventListener('click', ()=>{ st.selfie=null; $('#btnRetake').classList.add('hidden'); openCam(); refresh(); });
+
+/* ---------- Kirim ---------- */
+function refresh(){
+  const f = $('#nim').value.trim() && $('#nama').value.trim() && $('#jurusan').value.trim() && $('#univ').value;
+  $('#s1').classList.toggle('done', !!f); $('#s2').classList.toggle('done', !!st.loc); $('#s3').classList.toggle('done', !!st.selfie);
+  $('#btnSubmit').disabled = !(f && st.loc && st.selfie);
+}
+$('#btnSubmit').addEventListener('click', async ()=>{
+  const s=st.session, b=$('#btnSubmit'); b.disabled=true; b.textContent='Mengirim…'; msg('#submitMsg','');
+  try{
+    const r = await apiPost({action:'submit', sessionId:s.id, nama:$('#nama').value, nim:$('#nim').value, jurusan:$('#jurusan').value,
+      univ:$('#univ').value, lat:st.loc.lat, lng:st.loc.lng, acc:st.loc.acc, selfie:st.selfie.split(',')[1]});
+    if(!r.ok){ msg('#submitMsg', r.error||'Gagal mengirim.'); b.textContent='Kirim absen'; refresh(); return; }
+    const info={nama:$('#nama').value.trim(), waktu:r.waktu, jarak:r.jarak};
+    localStorage.setItem('absen_'+s.id, JSON.stringify(info)); showSuccess(info);
+  }catch(e){ msg('#submitMsg','Koneksi bermasalah. Coba kirim lagi.'); b.textContent='Kirim absen'; refresh(); }
+});
+function showSuccess(i){
+  $('#formWrap').classList.add('hidden'); $('#okCard').classList.remove('hidden');
+  $('#okDetail').innerHTML = `<b>${esc(i.nama)}</b><br>${esc(i.waktu)} · ${i.jarak} m dari lokasi`;
+}
+
+/* ---------- Admin ---------- */
+function parseMaps(t){
+  t=t.trim(); let m;
+  if((m=t.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/))||(m=t.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/))||(m=t.match(/[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/))||(m=t.match(/^(-?\d+\.\d+)\s*[, ]\s*(-?\d+\.\d+)$/)))
+    return {lat:+m[1],lng:+m[2]};
+  return null;
+}
+$('#aMaps').addEventListener('input', e=>{ const p=parseMaps(e.target.value); if(p){ $('#aLat').value=p.lat; $('#aLng').value=p.lng; msg('#adMsg','Koordinat terbaca.','ok'); } });
+$('#btnHere').addEventListener('click', async ()=>{
+  const b=$('#btnHere'); b.disabled=true; b.textContent='Membaca GPS…';
+  try{ const p=await getBestPosition(); $('#aLat').value=p.coords.latitude.toFixed(7); $('#aLng').value=p.coords.longitude.toFixed(7); msg('#adMsg',`Lokasi terisi (akurasi ±${Math.round(p.coords.accuracy)} m).`,'ok'); }
+  catch(e){ msg('#adMsg','Lokasi tidak terbaca: '+(e.message||'')); }
+  b.disabled=false; b.textContent='Pakai lokasi saya sekarang';
+});
+function renderAdmin(r){
+  const s=r.session; st.session=s;
+  $('#adCurrent').innerHTML = s ? `Sesi aktif sekarang: <b>${esc(s.materi)}</b> · ${esc(s.lokasi)} · ${esc(s.tanggal)} · ${s.aktif?'<span class="chip ok">dibuka</span>':'<span class="chip bad">ditutup</span>'}` : 'Belum ada sesi.';
+  if(s && !$('#aMateri').value){ $('#aMateri').value=s.materi; $('#aTanggal').value=s.tanggal; $('#aLokasi').value=s.lokasi; $('#aLat').value=s.lat; $('#aLng').value=s.lng; $('#aRadius').value=s.radius; }
+  const rk=r.rekap||[];
+  $('#adRekap').innerHTML = rk.length ? `<b>${rk.length}</b> peserta<table>${rk.map(x=>`<tr><td>${esc(x.nama)}</td><td>${esc(x.nim)}</td><td>${esc(x.jarak)} m</td></tr>`).join('')}</table>` : 'Belum ada yang absen.';
+}
+$('#btnLogin').addEventListener('click', async ()=>{
+  st.pin=$('#pin').value; const b=$('#btnLogin'); b.disabled=true; msg('#adMsg0','');
+  try{ const r=await apiPost({action:'admin_login',pin:st.pin}); if(!r.ok) msg('#adMsg0',r.error||'Gagal');
+    else{ $('#adLogin').classList.add('hidden'); $('#adPanel').classList.remove('hidden'); renderAdmin(r);} }
+  catch(e){ msg('#adMsg0','Koneksi bermasalah.'); }
+  b.disabled=false;
+});
+$('#btnRefresh').addEventListener('click', async ()=>{ const r=await apiPost({action:'admin_login',pin:st.pin}); if(r.ok) renderAdmin(r); });
+$('#btnSave').addEventListener('click', async ()=>{
+  const b=$('#btnSave'); b.disabled=true; msg('#adMsg','');
+  try{ const r=await apiPost({action:'admin_set',pin:st.pin,materi:$('#aMateri').value.trim(),tanggal:$('#aTanggal').value,lokasi:$('#aLokasi').value.trim(),lat:$('#aLat').value,lng:$('#aLng').value,radius:$('#aRadius').value});
+    if(!r.ok) msg('#adMsg',r.error); else { msg('#adMsg','Sesi disimpan & absen dibuka.','ok'); const l=await apiPost({action:'admin_login',pin:st.pin}); renderAdmin(l);} }
+  catch(e){ msg('#adMsg','Koneksi bermasalah.'); }
+  b.disabled=false;
+});
+$('#btnClose').addEventListener('click', async ()=>{
+  if(!confirm('Tutup absen untuk sesi ini?')) return;
+  const r=await apiPost({action:'admin_close',pin:st.pin}); if(r.ok){ msg('#adMsg','Absen ditutup.','ok'); const l=await apiPost({action:'admin_login',pin:st.pin}); renderAdmin(l);} else msg('#adMsg',r.error);
+});
+
+loadSession();
+</script>
+</body>
+</html>
